@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-export const createFiltersTemplate = () => `
+const createFiltersTemplate = () => `
   <div class="trip-controls__filters">
     <h2 class="visually-hidden">Filter events</h2>
     <form class="trip-filters" action="#" method="get">

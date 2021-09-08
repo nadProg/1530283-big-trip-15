@@ -16,11 +16,10 @@ import TripEventsListView from '../views/trip-events-list.js';
 import PointView from '../views/point.js';
 import EditPointView from '../views/edit-point.js';
 
-const POINTS_COUNT = 3;
-
 export default class ApplicationPresenter {
-  constructor(applicationContainer) {
-    this._applicationContainer = applicationContainer;
+  constructor({ container, api }) {
+    this._api = api;
+    this._applicationContainer = container;
 
     this._headerView = new HeaderView();
     this._headerContainerView = new HeaderContainerView();
@@ -35,11 +34,36 @@ export default class ApplicationPresenter {
     this._tripEventsView = new TripEventsView();
     this._sortBarView = new SortBarView();
     this._tripEventsListView = new TripEventsListView();
+
+    this._pointPresenters = new Map();
+
+    this._points = [];
+    this._offers = [];
+    this._destinations = [];
   }
 
-  init() {
+  async init() {
     this._renderHeader();
     this._renderMain();
+
+    [ this._points,
+      this._offers,
+      this._destinations,
+    ] = await Promise.all([
+      this._api.getPoints(),
+      this._api.getOffers(),
+      this._api.getDestinations(),
+    ]);
+
+    console.log('Points:');
+    console.log(this._points);
+
+    console.log('Offers:');
+    console.log(this._offers);
+
+    console.log('Destinations:');
+    console.log(this._destinations);
+
     this._renderTripEvents();
   }
 
@@ -73,11 +97,11 @@ export default class ApplicationPresenter {
   _renderTripEvents() {
     render(this._tripEventsView, this._tripEventsListView);
 
-    render(this._tripEventsListView, new EditPointView());
+    // render(this._tripEventsListView, new EditPointView());
 
-    for (let i = 0; i < POINTS_COUNT; i++) {
-      const pointView = new PointView();
+    this._points.forEach((point) => {
+      const pointView = new PointView(point);
       render(this._tripEventsListView, pointView);
-    }
+    });
   }
 }
