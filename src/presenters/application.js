@@ -11,8 +11,12 @@ import EventAddButtonView from '../views/event-add-button.js';
 import MainView from '../views/main.js';
 import ContainerView from '../views/container.js';
 import TripEventsView from '../views/trip-events.js';
-// Sort
-// Content
+import SortBarView from '../views/sort-bar.js';
+import TripEventsListView from '../views/trip-events-list.js';
+import PointView from '../views/point.js';
+import EditPointView from '../views/edit-point.js';
+
+const POINTS_COUNT = 3;
 
 export default class ApplicationPresenter {
   constructor(applicationContainer) {
@@ -29,11 +33,14 @@ export default class ApplicationPresenter {
     this._mainView = new MainView();
     this._containerView = new ContainerView();
     this._tripEventsView = new TripEventsView();
+    this._sortBarView = new SortBarView();
+    this._tripEventsListView = new TripEventsListView();
   }
 
   init() {
     this._renderHeader();
     this._renderMain();
+    this._renderTripEvents();
   }
 
   _renderHeader() {
@@ -59,5 +66,18 @@ export default class ApplicationPresenter {
     render(this._applicationContainer, this._mainView);
     render(this._mainView, this._containerView);
     render(this._containerView, this._tripEventsView);
+
+    render(this._tripEventsView, this._sortBarView);
+  }
+
+  _renderTripEvents() {
+    render(this._tripEventsView, this._tripEventsListView);
+
+    render(this._tripEventsListView, new EditPointView());
+
+    for (let i = 0; i < POINTS_COUNT; i++) {
+      const pointView = new PointView();
+      render(this._tripEventsListView, pointView);
+    }
   }
 }
