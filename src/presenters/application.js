@@ -55,6 +55,8 @@ export default class ApplicationPresenter {
       this._api.getDestinations(),
     ]);
 
+    this._points.sort(() => Math.random() > 0.5 ? 1 : -1);
+
     console.log('Points:');
     console.log(this._points);
 
@@ -99,7 +101,14 @@ export default class ApplicationPresenter {
 
     // render(this._tripEventsListView, new EditPointView());
 
-    this._points.forEach((point) => {
+    const editPointView = new EditPointView(this._points[0], this._offers, this._destinations);
+    render(this._tripEventsListView, editPointView);
+
+    this._points.forEach((point, index) => {
+      if (!index) {
+        return;
+      }
+
       const pointView = new PointView(point);
       render(this._tripEventsListView, pointView);
     });

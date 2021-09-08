@@ -12,3 +12,5 @@ export const formatDuration = (startDate, endDate) => {
 
   return dayjs(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]');
 };
+
+export const formatInputDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
