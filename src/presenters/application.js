@@ -1,5 +1,5 @@
 import { render } from '../utils/render.js';
-import { FilterType, Screen } from '../const.js';
+import { FilterType, Place, Screen } from '../const.js';
 
 import PointsModel from '../models/points.js';
 import FilterModel from '../models/filter.js';
@@ -47,8 +47,8 @@ export default class ApplicationPresenter {
   }
 
   async init() {
-    this._renderHeader();
     this._renderMain();
+    this._renderHeader();
 
     const [ points, offers, destinations ] = await Promise.all([
       this._api.getPoints(),
@@ -81,7 +81,7 @@ export default class ApplicationPresenter {
   }
 
   _renderHeader() {
-    render(this._applicationContainer, this._headerView);
+    render(this._applicationContainer, this._headerView, Place.AFTER_BEGIN);
     render(this._headerView, this._headerContainerView);
     this._renderTripMain();
   }
@@ -103,7 +103,7 @@ export default class ApplicationPresenter {
   }
 
   _renderMain() {
-    render(this._applicationContainer, this._mainView);
+    render(this._applicationContainer, this._mainView, Place.AFTER_BEGIN);
     render(this._mainView, this._containerView);
   }
 

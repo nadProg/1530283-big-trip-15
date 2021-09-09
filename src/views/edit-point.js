@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 
 import { PointType } from '../const.js';
 import { formatInputDate } from '../utils/date.js';
@@ -16,9 +16,9 @@ const createEventTypeItemTemplate = (value) => {
 
 const createDestinationOptionTemplate = (value) => `<option value="${value}"></option>`;
 
-const createOfferTemplate = ({ title, price }, index, checked = false) => `
+const createOfferTemplate = ({ title, price }, index, isChecked = false) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${checked ? 'checked' : ''} value="${index}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${isChecked ? 'checked' : ''} value="${title}">
     <label class="event__offer-label" for="event-offer-${index}">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -29,11 +29,22 @@ const createOfferTemplate = ({ title, price }, index, checked = false) => `
 
 const createDestinationPhoto = ({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`;
 
-const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: chosenType, destination }, offers, destinations) => {
-  const eventTypeItemsTemplate = Object.values(PointType).map(createEventTypeItemTemplate).join('');
-  const destinatonOptionsTemplate = destinations.map(({ name }) => createDestinationOptionTemplate(name)).join('');
-  const availableOffers = offers.find(({ type }) => type === chosenType).offers;
-  const offersListTemplate = availableOffers.map((offer, index) => createOfferTemplate(offer, index)).join('');
+const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: chosenType, destination }, availableOffers, destinations) => {
+  const eventTypeItemsTemplate = Object.values(PointType)
+    .map(createEventTypeItemTemplate)
+    .join('');
+
+  const destinatonOptionsTemplate = destinations
+    .map(({ name }) => createDestinationOptionTemplate(name))
+    .join('');
+
+  const offersListTemplate = availableOffers
+    .map((offer, index) => {
+      const isChecked = !!chosenOffers.find(({ title }) => title === offer.title);
+      return createOfferTemplate(offer, index, isChecked);
+    })
+    .join('');
+
   const destinationPhotosTemplate = destination.pictures.map(createDestinationPhoto).join('');
 
   return `
@@ -116,19 +127,26 @@ const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: 
   `;
 };
 
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends SmartView {
   constructor(point = {}, offers = [], destinations = []) {
     super();
 
-    this._point = { ...point };
+    this._data = { ...point };
     this._offers = [ ...offers ];
     this._destinations = [ ...destinations ];
 
+    this._availableOffers = [];
+
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
+    this._changeOffers = this._changeOffers.bind(this);
+    this._changeType = this._changeType.bind(this);
+
+    this._updateAvailableOffers();
+    this.restoreHandlers();
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._point, this._offers, this._destinations);
+    return createEditPointTemplate(this._data, this._availableOffers, this._destinations);
   }
 
   setRollupButtonClickHandler(callback) {
@@ -136,9 +154,46 @@ export default class EditPointView extends AbstractView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
   }
 
+  restoreHandlers() {
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+    this._setInnerHandlers();
+  }
+
+  _updateAvailableOffers() {
+    this._availableOffers = this._offers.find(({ type }) => type === this._data.type).offers;
+  }
+
+  _setInnerHandlers() {
+    if (this._availableOffers.length) {
+      this.getElement().querySelector('.event__available-offers').addEventListener('change', this._changeOffers);
+    }
+
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeType);
+  }
+
   // Удаление
 
   // Сохранение
+
+  _changeOffers(evt) {
+    const { checked, value } = evt.target;
+    if (checked) {
+      const newOffer = this._availableOffers.find(({ title }) => title === value);
+      if (newOffer) {
+        this._data.offers.push(newOffer);
+      }
+    } else {
+      this._data.offers = this._data.offers.filter(({ title }) => title !== value);
+    }
+  }
+
+  _changeType(evt) {
+    this._updateAvailableOffers();
+    this.updateData({
+      offers: [],
+      type: evt.target.value,
+    });
+  }
 
   _rollupButtonClickHandler() {
     this._callback.rollupButtonClick();
