@@ -1,6 +1,8 @@
 import { render } from '../utils/render.js';
+import { FilterType, Screen } from '../const.js';
 
 import PointsModel from '../models/points.js';
+import FilterModel from '../models/filter.js';
 
 import HeaderView from '../views/header.js';
 import HeaderContainerView from '../views/header-container.js';
@@ -21,8 +23,11 @@ export default class ApplicationPresenter {
     this._applicationContainer = container;
 
     this._pointsModel = new PointsModel();
+    this._filterModel = new FilterModel();
     this._offers = [];
     this._destinations = [];
+
+    this._screen = '';
 
     this._headerView = new HeaderView();
     this._headerContainerView = new HeaderContainerView();
@@ -36,6 +41,8 @@ export default class ApplicationPresenter {
     this._containerView = new ContainerView();
 
     this._tripSceenPresenter = null;
+
+    this._handleFilterChange = this._handleFilterChange.bind(this);
   }
 
   async init() {
@@ -65,10 +72,11 @@ export default class ApplicationPresenter {
       offers: this._offers,
       container: this._containerView,
       pointsModel: this._pointsModel,
+      filterModel: this._filterModel,
       destinations: this._destinations,
     });
 
-    this._tripSceenPresenter.init();
+    this._renderScreen(Screen.TRIP);
   }
 
   _renderHeader() {
@@ -85,6 +93,8 @@ export default class ApplicationPresenter {
   }
 
   _renderTripControls() {
+    this._filtersView.setChangeHandler(this._handleFilterChange);
+
     render(this._tripMainView, this._tripControlsView);
     render(this._tripControlsView, this._navigationView);
     render(this._tripControlsView, this._filtersView);
@@ -93,5 +103,26 @@ export default class ApplicationPresenter {
   _renderMain() {
     render(this._applicationContainer, this._mainView);
     render(this._mainView, this._containerView);
+  }
+
+  _renderScreen(screen) {
+    if (this._screen === screen) {
+      return;
+    }
+
+    switch (screen) {
+      case Screen.TRIP:
+        this._tripSceenPresenter.init();
+        break;
+      case Screen.STATISCTICS:
+        this._tripSceenPresenter.destroy();
+        break;
+    }
+  }
+
+  _handleFilterChange(filter) {
+    if (this._filterModel.getFilter() !== filter) {
+      this._filterModel.setFilter(null, filter);
+    }
   }
 }

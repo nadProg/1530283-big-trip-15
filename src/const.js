@@ -90,3 +90,14 @@ export const SortType = {
   PRICE: 'price',
   OFFERS: 'offers',
 };
+
+export const FilterType = {
+  ALL: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
+export const Screen = {
+  TRIP: 'trip',
+  STATISCTICS: 'statisctics',
+};

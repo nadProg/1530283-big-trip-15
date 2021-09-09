@@ -33,14 +33,11 @@ export default class SortBarView extends AbstractView {
 
   setChangeHandler(callback) {
     this._callback.change = callback;
-    this.getElement().addEventListener('click', this._changeHandler);
+    this.getElement().addEventListener('change', this._changeHandler);
   }
 
   _changeHandler(evt) {
     const { value } = evt.target;
-
-    if (value) {
-      this._callback.change(value);
-    }
+    this._callback.change(value);
   }
 }

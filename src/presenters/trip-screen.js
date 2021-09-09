@@ -1,5 +1,5 @@
-import { render, rerender } from '../utils/render.js';
-import { sortByBasePrice, sortByStartDate, sortByTime } from '../utils/point.js';
+import { remove, rerender } from '../utils/render.js';
+import { sortByBasePrice, sortByStartDate, sortByTime, filter } from '../utils/point.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
@@ -19,7 +19,7 @@ export default class TripScreenPresenter {
 
     this._sortType = SortType.DAY;
 
-    this._tripEventsView = new TripEventsView();
+    this._tripEventsView = null;
     this._sortBarView = null;
     this._tripEventsListView = null;
 
@@ -27,16 +27,23 @@ export default class TripScreenPresenter {
 
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
     this._handleSortBarChange = this._handleSortBarChange.bind(this);
+    this._handleModelChange = this._handleModelChange.bind(this);
   }
 
   init() {
     this._sortType = SortType.DAY;
 
     this._renderTripEventsView();
+
+    this._filterModel.addObserver(this._handleModelChange);
   }
 
   destroy() {
-
+    this._closeAllEditPoints();
+    remove(this._tripEventsView);
+    this._tripEventsView = null;
+    // this._sortBarView = null;
+    // this._tripEventsListView = null;
   }
 
   _renderSortBar() {
@@ -50,7 +57,7 @@ export default class TripScreenPresenter {
     const prevTripEventsListView = this._tripEventsListView;
     this._tripEventsListView = new TripEventsListView();
 
-    const points = [ ...this._pointsModel.getAll()];
+    const points = filter[this._filterModel.getFilter()](this._pointsModel.getAll());
 
     switch (this._sortType) {
       case SortType.DAY:
@@ -82,10 +89,13 @@ export default class TripScreenPresenter {
   }
 
   _renderTripEventsView() {
+    const prevTripEventsView = this._tripEventsView;
+    this._tripEventsView = new TripEventsView();
+
     this._renderSortBar();
     this._renderPointList();
 
-    render(this._tripScreenContainer, this._tripEventsView);
+    rerender(this._tripEventsView, prevTripEventsView, this._tripScreenContainer);
   }
 
   _closeAllEditPoints() {
@@ -101,6 +111,12 @@ export default class TripScreenPresenter {
 
     this._sortType = sortType;
 
+    this._renderPointList();
+  }
+
+  _handleModelChange() {
+    this._sortType = SortType.DAY;
+    this._renderSortBar();
     this._renderPointList();
   }
 }

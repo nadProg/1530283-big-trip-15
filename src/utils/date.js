@@ -14,3 +14,14 @@ export const formatDuration = (startDate, endDate) => {
 };
 
 export const formatInputDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+
+export const isPointDuringToday = ({ start, end }) => {
+  const today = dayjs();
+  end = dayjs(end);
+  start = dayjs(start);
+  return today.isAfter(start) && today.isBefore(end);
+};
+
+export const isStartInFuture = ({ start }) => dayjs(start).isAfter(dayjs());
+
+export const isEndInPast= ({ end }) => dayjs(end).isBefore(dayjs());
