@@ -1,4 +1,4 @@
-import { render, rerender, remove } from './render.js';
+import { render, rerender, remove } from '../utils/render.js';
 
 import PointView from '../views/point.js';
 import EditPointView from '../views/edit-point.js';
@@ -13,7 +13,8 @@ export default class PointPresenter {
 
     this._currentView = null;
 
-    this._handleRollupButtonClick = this._handleRollupButtonClick.bind(this);
+    this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
+    this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
   }
 
   init(point) {
@@ -22,9 +23,10 @@ export default class PointPresenter {
 
     if (this._editMode) {
       this._currentView = new EditPointView(point, this._offers, this._destinations);
+      this._currentView.setRollupButtonClickHandler(this._handleCloseButtonClick);
     } else {
       this._currentView = new PointView(point);
-      this._currentView.setRollupButtonClickHandler(this._handleRollupButtonClick);
+      this._currentView.setRollupButtonClickHandler(this._handleOpenButtonClick);
     }
 
     rerender(this._currentView, prevView, this._pointContainer);
@@ -40,9 +42,25 @@ export default class PointPresenter {
     this._editPointView = null;
   }
 
-  _handleRollupButtonClick() {
-    console.log('Click');
-    this._editMode = true;
-    this.init(this._point);
+  setEditMode() {
+    if (!this._editMode) {
+      this._editMode = true;
+      this.init(this._point);
+    }
+  }
+
+  setViewMode() {
+    if (this._editMode) {
+      this._editMode = false;
+      this.init(this._point);
+    }
+  }
+
+  _handleOpenButtonClick() {
+    this.setEditMode();
+  }
+
+  _handleCloseButtonClick() {
+    this.setViewMode();
   }
 }

@@ -14,7 +14,7 @@ import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
 import TripEventsListView from '../views/trip-events-list.js';
 
-import PointPresenter from '../utils/point.js';
+import PointPresenter from '../presenters/point.js';
 
 export default class ApplicationPresenter {
   constructor({ container, api }) {

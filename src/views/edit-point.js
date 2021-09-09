@@ -57,7 +57,7 @@ const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: 
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination">
-              Flight
+              ${chosenType}
             </label>
             <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destination.name}" list="destination-list">
             <datalist id="destination-list">
@@ -123,9 +123,20 @@ export default class EditPointView extends AbstractView {
     this._point = { ...point };
     this._offers = [ ...offers ];
     this._destinations = [ ...destinations ];
+
+    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEditPointTemplate(this._point, this._offers, this._destinations);
+  }
+
+  setRollupButtonClickHandler(callback) {
+    this._callback.rollupButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+  }
+
+  _rollupButtonClickHandler() {
+    this._callback.rollupButtonClick();
   }
 }
