@@ -43,6 +43,7 @@ export default class ApplicationPresenter {
     this._tripSceenPresenter = null;
 
     this._handleFilterChange = this._handleFilterChange.bind(this);
+    this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
   }
 
   async init() {
@@ -90,6 +91,7 @@ export default class ApplicationPresenter {
     render(this._tripMainView, this._tripInfoView);
     this._renderTripControls();
     render(this._tripMainView, this._eventAddButtonView);
+    this._eventAddButtonView.setClickHandler(this._handleAddEventButtonClick);
   }
 
   _renderTripControls() {
@@ -110,6 +112,8 @@ export default class ApplicationPresenter {
       return;
     }
 
+    this._screen = screen;
+
     switch (screen) {
       case Screen.TRIP:
         this._tripSceenPresenter.init();
@@ -123,6 +127,12 @@ export default class ApplicationPresenter {
   _handleFilterChange(filter) {
     if (this._filterModel.getFilter() !== filter) {
       this._filterModel.setFilter(null, filter);
+    }
+  }
+
+  _handleAddEventButtonClick() {
+    if (this._screen === Screen.TRIP) {
+      console.log('click');
     }
   }
 }
