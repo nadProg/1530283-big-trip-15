@@ -1,3 +1,4 @@
+import { isEsc } from '../utils/common.js';
 import { render, rerender, remove } from '../utils/render.js';
 
 import PointView from '../views/point.js';
@@ -16,6 +17,7 @@ export default class PointPresenter {
     this._closeAllEditPoints = closeAllEditPoints;
     this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
+    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
   }
 
   init(point) {
@@ -49,6 +51,7 @@ export default class PointPresenter {
     if (!this._editMode) {
       this._editMode = true;
       this.init(this._point);
+      window.addEventListener('keydown', this._handleWindowKeydown);
     }
   }
 
@@ -56,6 +59,7 @@ export default class PointPresenter {
     if (this._editMode) {
       this._editMode = false;
       this.init(this._point);
+      window.removeEventListener('keydown', this._handleWindowKeydown);
     }
   }
 
@@ -65,5 +69,13 @@ export default class PointPresenter {
 
   _handleCloseButtonClick() {
     this.setViewMode();
+  }
+
+  _handleWindowKeydown(evt) {
+    if (isEsc(evt)) {
+      evt.preventDefault();
+
+      this.setViewMode();
+    }
   }
 }
