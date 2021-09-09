@@ -1,4 +1,38 @@
+import { updateItem } from '../utils/common.js';
+
 export default class PointsModel {
+  constructor(points = []) {
+    this._points = [ ...points ];
+  }
+
+  getAll() {
+    return this._points;
+  }
+
+  setPoints(updateType, points) {
+    this._points = [ ...points ];
+
+    this._notify(updateType, points);
+  }
+
+  createPoint(updateType, newPoint) {
+    this._points = [ ...this._points, newPoint];
+
+    this._notify(updateType, newPoint);
+  }
+
+  updatePoint(updateType, updatedPoint) {
+    this._points = updateItem(this._points, updatedPoint);
+
+    this._notify(updateType, updatedPoint);
+  }
+
+  deletePoint(updateType, deletedPoint) {
+    this._points = this._points.filter(({id}) => id !== deletedPoint.id);
+
+    this._notify(updateType, deletedPoint);
+  }
+
   static adaptPointToClient(point) {
     const clientPoint = { ...point };
 
