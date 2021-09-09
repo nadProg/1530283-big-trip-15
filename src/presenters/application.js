@@ -1,4 +1,7 @@
 import { render } from '../utils/render.js';
+import { sortByBasePrice, sortByStartDate, sortByTime } from '../utils/point.js';
+
+import PointsModel from '../models/points.js';
 
 import HeaderView from '../views/header.js';
 import HeaderContainerView from '../views/header-container.js';
@@ -21,6 +24,10 @@ export default class ApplicationPresenter {
     this._api = api;
     this._applicationContainer = container;
 
+    this._pointsModel = new PointsModel();
+    this._offers = [];
+    this._destinations = [];
+
     this._headerView = new HeaderView();
     this._headerContainerView = new HeaderContainerView();
     this._tripMainView = new TripMainView();
@@ -37,10 +44,6 @@ export default class ApplicationPresenter {
 
     this._pointPresenters = new Map();
 
-    this._points = [];
-    this._offers = [];
-    this._destinations = [];
-
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
   }
 
@@ -48,19 +51,23 @@ export default class ApplicationPresenter {
     this._renderHeader();
     this._renderMain();
 
-    [ this._points,
-      this._offers,
-      this._destinations,
-    ] = await Promise.all([
+    const [ points, offers, destinations ] = await Promise.all([
       this._api.getPoints(),
       this._api.getOffers(),
       this._api.getDestinations(),
     ]);
 
-    this._points.sort(() => Math.random() > 0.5 ? 1 : -1);
+    points.sort(() => Math.random() > 0.5 ? 1 : -1);
+    points.sort(sortByStartDate);
+    points.sort(sortByTime);
+    points.sort(sortByBasePrice);
+
+    this._pointsModel.setPoints(null, points);
+    this._offers = [ ...offers ],
+    this._destinations = [ ...destinations ];
 
     console.log('Points:');
-    console.log(this._points);
+    console.log(this._pointsModel.getAll());
 
     console.log('Offers:');
     console.log(this._offers);
@@ -101,7 +108,7 @@ export default class ApplicationPresenter {
   _renderTripEvents() {
     render(this._tripEventsView, this._tripEventsListView);
 
-    this._points.forEach((point) => {
+    this._pointsModel.getAll().forEach((point) => {
       const pointPresenter = new PointPresenter({
         offers: this._offers,
         destinations: this._destinations,

@@ -1,7 +1,10 @@
 import { updateItem } from '../utils/common.js';
+import AbstractObserver from '../utils/abstract-observer.js';
 
-export default class PointsModel {
+export default class PointsModel extends AbstractObserver {
   constructor(points = []) {
+    super();
+
     this._points = [ ...points ];
   }
 
