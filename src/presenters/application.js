@@ -1,5 +1,4 @@
 import { render } from '../utils/render.js';
-import { sortByBasePrice, sortByStartDate, sortByTime } from '../utils/point.js';
 
 import PointsModel from '../models/points.js';
 
@@ -48,11 +47,6 @@ export default class ApplicationPresenter {
       this._api.getOffers(),
       this._api.getDestinations(),
     ]);
-
-    points.sort(() => Math.random() > 0.5 ? 1 : -1);
-    points.sort(sortByStartDate);
-    points.sort(sortByTime);
-    points.sort(sortByBasePrice);
 
     this._pointsModel.setPoints(null, points);
     this._offers = [ ...offers ],

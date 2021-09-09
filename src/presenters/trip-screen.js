@@ -1,4 +1,5 @@
 import { render, rerender } from '../utils/render.js';
+import { sortByBasePrice, sortByStartDate, sortByTime } from '../utils/point.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
@@ -20,7 +21,7 @@ export default class TripScreenPresenter {
 
     this._tripEventsView = new TripEventsView();
     this._sortBarView = null;
-    this._tripEventsListView = new TripEventsListView();
+    this._tripEventsListView = null;
 
     this._pointPresenters = new Map();
 
@@ -44,9 +45,26 @@ export default class TripScreenPresenter {
   }
 
   _renderPointList() {
-    render(this._tripEventsView, this._tripEventsListView);
+    const prevTripEventsListView = this._tripEventsListView;
+    this._tripEventsListView = new TripEventsListView();
 
-    this._pointsModel.getAll().forEach((point) => {
+    const points = [ ...this._pointsModel.getAll()];
+
+    switch (this._sortType) {
+      case SortType.DAY:
+        points.sort(sortByStartDate);
+        break;
+      case SortType.TIME:
+        points.sort(sortByTime);
+        break;
+      case SortType.PRICE:
+        points.sort(sortByBasePrice);
+        break;
+    }
+
+    this._pointPresenters.clear();
+
+    points.forEach((point) => {
       const pointPresenter = new PointPresenter({
         offers: this._offers,
         destinations: this._destinations,
@@ -57,6 +75,8 @@ export default class TripScreenPresenter {
       this._pointPresenters.set(point.id, pointPresenter);
       pointPresenter.init(point);
     });
+
+    rerender(this._tripEventsListView, prevTripEventsListView, this._tripEventsView);
   }
 
   _renderTripEventsView() {
@@ -80,5 +100,6 @@ export default class TripScreenPresenter {
     this._sortType = sortType;
 
     this._renderSortBar();
+    this._renderPointList();
   }
 }
