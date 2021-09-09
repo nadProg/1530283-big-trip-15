@@ -16,10 +16,10 @@ const createEventTypeItemTemplate = (value) => {
 
 const createDestinationOptionTemplate = (value) => `<option value="${value}"></option>`;
 
-const createOfferTemplate = ({ title, price }, checked = false) => `
+const createOfferTemplate = ({ title, price }, index, checked = false) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage" type="checkbox" name="event-offer-luggage" ${checked ? 'checked' : ''}>
-    <label class="event__offer-label" for="event-offer-luggage">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${checked ? 'checked' : ''} value="${index}">
+    <label class="event__offer-label" for="event-offer-${index}">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${price}</span>
@@ -33,7 +33,7 @@ const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: 
   const eventTypeItemsTemplate = Object.values(PointType).map(createEventTypeItemTemplate).join('');
   const destinatonOptionsTemplate = destinations.map(({ name }) => createDestinationOptionTemplate(name)).join('');
   const availableOffers = offers.find(({ type }) => type === chosenType).offers;
-  const offersListTemplate = availableOffers.map((offer) => createOfferTemplate(offer)).join('');
+  const offersListTemplate = availableOffers.map((offer, index) => createOfferTemplate(offer, index)).join('');
   const destinationPhotosTemplate = destination.pictures.map(createDestinationPhoto).join('');
 
   return `
