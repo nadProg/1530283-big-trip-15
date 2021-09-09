@@ -41,8 +41,8 @@ export default class PointsModel extends AbstractObserver {
 
     clientPoint.basePrice = point['base_price'];
     clientPoint.date = {
-      to: new Date(point['date_to']),
-      from: new Date(point['date_from']),
+      end: new Date(point['date_to']),
+      start: new Date(point['date_from']),
     };
     clientPoint.isFavorite = point['is_favorite'];
 

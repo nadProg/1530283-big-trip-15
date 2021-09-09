@@ -13,11 +13,8 @@ import FiltersView from '../views/filters.js';
 import EventAddButtonView from '../views/event-add-button.js';
 import MainView from '../views/main.js';
 import ContainerView from '../views/container.js';
-import TripEventsView from '../views/trip-events.js';
-import SortBarView from '../views/sort-bar.js';
-import TripEventsListView from '../views/trip-events-list.js';
 
-import PointPresenter from '../presenters/point.js';
+import TripScreenPresenter from './trip-screen.js';
 
 export default class ApplicationPresenter {
   constructor({ container, api }) {
@@ -38,13 +35,8 @@ export default class ApplicationPresenter {
     this._eventAddButtonView = new EventAddButtonView();
     this._mainView = new MainView();
     this._containerView = new ContainerView();
-    this._tripEventsView = new TripEventsView();
-    this._sortBarView = new SortBarView();
-    this._tripEventsListView = new TripEventsListView();
 
-    this._pointPresenters = new Map();
-
-    this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
+    this._tripSceenPresenter = null;
   }
 
   async init() {
@@ -75,7 +67,14 @@ export default class ApplicationPresenter {
     console.log('Destinations:');
     console.log(this._destinations);
 
-    this._renderTripEvents();
+    this._tripSceenPresenter = new TripScreenPresenter({
+      offers: this._offers,
+      container: this._containerView,
+      pointsModel: this._pointsModel,
+      destinations: this._destinations,
+    });
+
+    this._tripSceenPresenter.init();
   }
 
   _renderHeader() {
@@ -100,30 +99,5 @@ export default class ApplicationPresenter {
   _renderMain() {
     render(this._applicationContainer, this._mainView);
     render(this._mainView, this._containerView);
-    render(this._containerView, this._tripEventsView);
-
-    render(this._tripEventsView, this._sortBarView);
-  }
-
-  _renderTripEvents() {
-    render(this._tripEventsView, this._tripEventsListView);
-
-    this._pointsModel.getAll().forEach((point) => {
-      const pointPresenter = new PointPresenter({
-        offers: this._offers,
-        destinations: this._destinations,
-        container: this._tripEventsListView,
-        closeAllEditPoints: this._closeAllEditPoints,
-      });
-
-      this._pointPresenters.set(point.id, pointPresenter);
-      pointPresenter.init(point);
-    });
-  }
-
-  _closeAllEditPoints() {
-    for (const pointPresenter of this._pointPresenters.values()) {
-      pointPresenter.setViewMode();
-    }
   }
 }

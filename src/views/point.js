@@ -15,18 +15,18 @@ const createPointTemplate = ({ date, basePrice, offers, type, destination, isFav
   return `
     <li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="${formatDateTime(date.from)}">${formdatEventDate(date.from)}</time>
+        <time class="event__date" datetime="${formatDateTime(date.start)}">${formdatEventDate(date.start)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${formatDateTime(date.from)}">${formatTime(date.from)}</time>
+            <time class="event__start-time" datetime="${formatDateTime(date.start)}">${formatTime(date.start)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${formatDateTime(date.to)}">${formatTime(date.to)}</time>
+            <time class="event__end-time" datetime="${formatDateTime(date.end)}">${formatTime(date.end)}</time>
           </p>
-          <p class="event__duration">${formatDuration(date.from, date.to)}</p>
+          <p class="event__duration">${formatDuration(date.start, date.end)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
