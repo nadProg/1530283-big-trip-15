@@ -40,6 +40,8 @@ export default class ApplicationPresenter {
     this._points = [];
     this._offers = [];
     this._destinations = [];
+
+    this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
   }
 
   async init() {
@@ -104,10 +106,17 @@ export default class ApplicationPresenter {
         offers: this._offers,
         destinations: this._destinations,
         container: this._tripEventsListView,
+        closeAllEditPoints: this._closeAllEditPoints,
       });
 
       this._pointPresenters.set(point.id, pointPresenter);
       pointPresenter.init(point);
     });
+  }
+
+  _closeAllEditPoints() {
+    for (const pointPresenter of this._pointPresenters.values()) {
+      pointPresenter.setViewMode();
+    }
   }
 }

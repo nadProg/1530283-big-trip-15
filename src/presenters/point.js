@@ -4,7 +4,7 @@ import PointView from '../views/point.js';
 import EditPointView from '../views/edit-point.js';
 
 export default class PointPresenter {
-  constructor({ container, offers, destinations }) {
+  constructor({ container, offers, destinations, closeAllEditPoints }) {
     this._pointContainer = container;
     this._editMode = false;
 
@@ -13,6 +13,7 @@ export default class PointPresenter {
 
     this._currentView = null;
 
+    this._closeAllEditPoints = closeAllEditPoints;
     this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
   }
@@ -43,6 +44,8 @@ export default class PointPresenter {
   }
 
   setEditMode() {
+    this._closeAllEditPoints();
+
     if (!this._editMode) {
       this._editMode = true;
       this.init(this._point);

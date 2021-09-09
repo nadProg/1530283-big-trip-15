@@ -136,6 +136,10 @@ export default class EditPointView extends AbstractView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
   }
 
+  // Удаление
+
+  // Сохранение
+
   _rollupButtonClickHandler() {
     this._callback.rollupButtonClick();
   }
