@@ -84,7 +84,9 @@ export const PointType = {
 };
 
 export const SortType = {
-  DAY: 'sort-day',
-  TIME: 'sort-time',
-  PRICE: 'sort-price',
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
 };
