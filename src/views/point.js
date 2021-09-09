@@ -58,9 +58,20 @@ export default class PointView extends AbstractView {
     super();
 
     this._point = { ...point };
+
+    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
+  }
+
+  setRollupButtonClickHandler(callback) {
+    this._callback.rollupButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+  }
+
+  _rollupButtonClickHandler() {
+    this._callback.rollupButtonClick();
   }
 }

@@ -117,7 +117,7 @@ const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: 
 };
 
 export default class EditPointView extends AbstractView {
-  constructor(point = {}, offers = {}, destinations = []) {
+  constructor(point = {}, offers = [], destinations = []) {
     super();
 
     this._point = { ...point };

@@ -13,8 +13,8 @@ import ContainerView from '../views/container.js';
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
 import TripEventsListView from '../views/trip-events-list.js';
-import PointView from '../views/point.js';
-import EditPointView from '../views/edit-point.js';
+
+import PointPresenter from '../utils/point.js';
 
 export default class ApplicationPresenter {
   constructor({ container, api }) {
@@ -99,18 +99,15 @@ export default class ApplicationPresenter {
   _renderTripEvents() {
     render(this._tripEventsView, this._tripEventsListView);
 
-    // render(this._tripEventsListView, new EditPointView());
+    this._points.forEach((point) => {
+      const pointPresenter = new PointPresenter({
+        offers: this._offers,
+        destinations: this._destinations,
+        container: this._tripEventsListView,
+      });
 
-    const editPointView = new EditPointView(this._points[0], this._offers, this._destinations);
-    render(this._tripEventsListView, editPointView);
-
-    this._points.forEach((point, index) => {
-      if (!index) {
-        return;
-      }
-
-      const pointView = new PointView(point);
-      render(this._tripEventsListView, pointView);
+      this._pointPresenters.set(point.id, pointPresenter);
+      pointPresenter.init(point);
     });
   }
 }
