@@ -26,10 +26,12 @@ export default class TripScreenPresenter {
     this._pointPresenters = new Map();
 
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
-    this._handleSortBarClick = this._handleSortBarClick.bind(this);
+    this._handleSortBarChange = this._handleSortBarChange.bind(this);
   }
 
   init() {
+    this._sortType = SortType.DAY;
+
     this._renderTripEventsView();
   }
 
@@ -40,7 +42,7 @@ export default class TripScreenPresenter {
   _renderSortBar() {
     const prevSortBarView = this._sortBarView;
     this._sortBarView = new SortBarView(this._sortType);
-    this._sortBarView.setClickHandler(this._handleSortBarClick);
+    this._sortBarView.setChangeHandler(this._handleSortBarChange);
     rerender(this._sortBarView, prevSortBarView, this._tripEventsView);
   }
 
@@ -92,14 +94,13 @@ export default class TripScreenPresenter {
     }
   }
 
-  _handleSortBarClick(sortType) {
+  _handleSortBarChange(sortType) {
     if (this._sortType === sortType) {
       return;
     }
 
     this._sortType = sortType;
 
-    this._renderSortBar();
     this._renderPointList();
   }
 }

@@ -5,8 +5,8 @@ const createSortItemTemplate = (sortType, isChecked) => {
   const isDisabled = sortType === SortType.EVENT || sortType === SortType.OFFERS ? 'disabled' : '';
 
   return `
-    <div class="trip-sort__item  trip-sort__item--${sortType}" data-sort-type="${sortType}">
-      <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortType}" ${isChecked ? 'checked' : ''} ${isDisabled}>
+    <div class="trip-sort__item  trip-sort__item--${sortType}">
+      <input id="sort-${sortType}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${sortType}" ${isChecked ? 'checked' : ''} ${isDisabled}>
       <label class="trip-sort__btn" for="sort-${sortType}">${sortType}</label>
     </div>
   `;
@@ -24,29 +24,23 @@ export default class SortBarView extends AbstractView {
 
     this._activeSortType = activeSortType;
 
-    this._clickHandler = this._clickHandler.bind(this);
+    this._changeHandler = this._changeHandler.bind(this);
   }
 
   getTemplate() {
     return createSortBarTemplate(this._activeSortType);
   }
 
-  setClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().addEventListener('click', this._clickHandler);
+  setChangeHandler(callback) {
+    this._callback.change = callback;
+    this.getElement().addEventListener('click', this._changeHandler);
   }
 
-  _clickHandler(evt) {
-    const sortItem = evt.target.closest('.trip-sort__item');
+  _changeHandler(evt) {
+    const { value } = evt.target;
 
-    if (!sortItem || !evt.currentTarget.contains(sortItem)) {
-      return;
-    }
-
-    const { sortType } = sortItem.dataset;
-
-    if (sortType !== SortType.EVENT && sortType !== SortType.OFFERS) {
-      this._callback.click(sortType);
+    if (value) {
+      this._callback.change(value);
     }
   }
 }
