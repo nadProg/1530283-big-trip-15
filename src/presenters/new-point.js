@@ -1,11 +1,11 @@
 import { isEsc } from '../utils/common.js';
-import { Place } from '../const.js';
+import { Place, UserAction } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
 
 import EditPointView from '../views/edit-point.js';
 
 export default class NewPointPresenter {
-  constructor({ container, offers, destinations, closeNewPoint }) {
+  constructor({ container, offers, destinations, closeNewPoint, handlePointViewAction }) {
     this._pointContainer = container;
     this._editMode = false;
 
@@ -15,11 +15,10 @@ export default class NewPointPresenter {
     this._newPointView = null;
 
     this._closeNewPoint= closeNewPoint;
-    // this._closeAllEditPoints = closeAllEditPoints;
-    // this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
-    // this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
     this._handleResetButtonClick = this._handleResetButtonClick.bind(this);
+    this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
+    this._changeFilm = handlePointViewAction;
   }
 
   init() {
@@ -28,8 +27,8 @@ export default class NewPointPresenter {
     }
 
     this._newPointView = new EditPointView(null, this._offers, this._destinations);
-
     this._newPointView.setResetButtonClickHandler(this._handleResetButtonClick);
+    this._newPointView.setSubmitButtonClickHandler(this._handleSubmitButtonClick);
 
     render(this._pointContainer, this._newPointView, Place.AFTER_BEGIN);
 
@@ -55,5 +54,10 @@ export default class NewPointPresenter {
 
   _handleResetButtonClick() {
     this.destroy();
+  }
+
+  _handleSubmitButtonClick(payload) {
+    console.log('Submit payload', payload);
+    this._changeFilm(UserAction.CREATE_POINT, null, payload);
   }
 }

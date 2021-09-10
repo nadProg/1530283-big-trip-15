@@ -19,7 +19,12 @@ export default class PointsModel extends AbstractObserver {
   }
 
   createPoint(updateType, newPoint) {
-    this._points = [ ...this._points, newPoint];
+    newPoint = {
+      ...newPoint,
+      id: this.getAll().length + 1,
+    };
+
+    this._points = [ ...this._points, newPoint ];
 
     this._notify(updateType, newPoint);
   }
@@ -30,10 +35,10 @@ export default class PointsModel extends AbstractObserver {
     this._notify(updateType, updatedPoint);
   }
 
-  deletePoint(updateType, deletedPoint) {
-    this._points = this._points.filter(({id}) => id !== deletedPoint.id);
+  deletePoint(updateType, deletedPointId) {
+    this._points = this._points.filter(({id}) => id !== deletedPointId);
 
-    this._notify(updateType, deletedPoint);
+    this._notify(updateType, deletedPointId);
   }
 
   static adaptPointToClient(point) {

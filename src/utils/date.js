@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 export const formdatEventDate = (date) => dayjs(date).format('MMM DD');
 
@@ -10,7 +13,7 @@ export const formatDuration = (startDate, endDate) => {
   startDate = dayjs(startDate);
   endDate = dayjs(endDate);
 
-  return dayjs(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]');
+  return dayjs.duration(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]');
 };
 
 export const formatInputDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');

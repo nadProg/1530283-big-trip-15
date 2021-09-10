@@ -174,7 +174,7 @@ export default class EditPointView extends SmartView {
     // Disable form
   }
 
-  setRollupButtonClickHandler(callback) {
+  setCloseButtonClickHandler(callback) {
     this._callback.rollupButtonClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
   }
@@ -186,7 +186,7 @@ export default class EditPointView extends SmartView {
 
   setResetButtonClickHandler(callback) {
     this._callback.resetButtonClick = callback;
-    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._resetButtonClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetButtonClickHandler);
   }
 
   restoreHandlers() {
@@ -198,6 +198,16 @@ export default class EditPointView extends SmartView {
 
     this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetButtonClickHandler);
+  }
+
+  _getData() {
+    const data = { ...this._data };
+
+    delete data.isNew;
+    delete data.availableOffers;
+    delete data.availableDestinations;
+
+    return data;
   }
 
   _updateAvailableOffers(newType) {
@@ -222,18 +232,18 @@ export default class EditPointView extends SmartView {
   _submitButtonClickHandler(evt) {
     evt.preventDefault();
 
-    this._callback.submitButtonClick();
+    this._callback.submitButtonClick(this._getData());
   }
 
   _resetButtonClickHandler(evt) {
     evt.preventDefault();
 
-    this._callback.resetButtonClick();
+    this._callback.resetButtonClick(this._data.id);
   }
 
   _changeOffers(evt) {
     const { checked, value } = evt.target;
-    let offers = [];
+    let offers = [ ...this._data.offers ];
 
     if (checked) {
       const newOffer = this._data.availableOffers.find(({ title }) => title === value);

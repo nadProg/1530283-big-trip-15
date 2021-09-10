@@ -1,6 +1,6 @@
 import { remove, rerender } from '../utils/render.js';
 import { sortByBasePrice, sortByStartDate, sortByTime, filter } from '../utils/point.js';
-import { SortType } from '../const.js';
+import { SortType, UserAction } from '../const.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
@@ -32,6 +32,8 @@ export default class TripScreenPresenter {
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
     this._handleSortBarChange = this._handleSortBarChange.bind(this);
     this._handleModelChange = this._handleModelChange.bind(this);
+
+    this._handlePointViewAction = this._handlePointViewAction.bind(this);
 
     this._closeNewPoint = this._closeNewPoint.bind(this);
   }
@@ -65,6 +67,7 @@ export default class TripScreenPresenter {
       destinations: this._destinations,
       closeAllEditPoints: this._closeAllEditPoints,
       closeNewPoint: this._closeNewPoint,
+      handlePointViewAction: this._handlePointViewAction,
     });
 
     this._newPointPresenter.init();
@@ -103,6 +106,7 @@ export default class TripScreenPresenter {
         destinations: this._destinations,
         container: this._tripEventsListView,
         closeAllEditPoints: this._closeAllEditPoints,
+        handlePointViewAction: this._handlePointViewAction,
       });
 
       this._pointPresenters.set(point.id, pointPresenter);
@@ -143,6 +147,26 @@ export default class TripScreenPresenter {
 
     this._sortType = sortType;
 
+    this._renderPointList();
+  }
+
+  _handlePointViewAction(userAction, updateType, payload) {
+    switch (userAction) {
+      case UserAction.CREATE_POINT:
+        this._pointsModel.createPoint(updateType, payload);
+        break;
+
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, payload);
+        break;
+
+      case UserAction.UPDATE_POINT:
+        console.log('update!');
+        this._pointsModel.updatePoint(updateType, payload);
+        break;
+    }
+
+    console.log('!!');
     this._renderPointList();
   }
 

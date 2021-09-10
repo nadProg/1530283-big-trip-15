@@ -104,10 +104,16 @@ export const Screen = {
 
 export const DEFAULT_POINT = {
   date: {
-    end: new Date(),
+    end: new Date(Date.now() + 1000 * 60 * 60 * 24),
     start: new Date(),
   },
   basePrice: 100,
   offers: [],
   isNew: true,
+};
+
+export const UserAction = {
+  CREATE_POINT: 'create-point',
+  UPDATE_POINT: 'update-point',
+  DELETE_POINT: 'delete-point',
 };
