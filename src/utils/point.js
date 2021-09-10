@@ -14,7 +14,16 @@ export const filter = {
 };
 
 export const getTripPrice = (points) => points.reduce((tripPrice, point) => {
-  console.log(point);
   const offersPrice = point.offers.reduce((price, offer) => price + offer.price, 0);
   return tripPrice + point.basePrice + offersPrice;
 }, 0);
+
+export const getTripCities = (points) => points.map(({ destination }) => destination.name);
+
+export const formatTripCities = (cities) => {
+  if (cities.length > 3) {
+    cities = [ cities[0], '...', cities[cities.length - 1]];
+  }
+
+  return cities.join(' — ');
+};
