@@ -149,6 +149,7 @@ export default class EditPointView extends SmartView {
     this._offers = [ ...offers ];
 
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
+    this._changeDestination = this._changeDestination.bind(this);
     this._changeOffers = this._changeOffers.bind(this);
     this._changeType = this._changeType.bind(this);
 
@@ -183,6 +184,7 @@ export default class EditPointView extends SmartView {
     }
 
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeType);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._changeDestination);
   }
 
   // Удаление
@@ -212,6 +214,21 @@ export default class EditPointView extends SmartView {
       type,
       offers: [],
     });
+  }
+
+  _changeDestination(evt) {
+    const input = evt.target;
+    const { value: destinationName } = input;
+    const destination = this._data.availableDestinations.find(({ name }) => name === destinationName);
+
+    if (destination) {
+      input.setCustomValidity('');
+      this.updateData({ destination });
+      return;
+    }
+
+    input.setCustomValidity('Destination must be one of list values');
+    input.reportValidity();
   }
 
   _rollupButtonClickHandler() {
