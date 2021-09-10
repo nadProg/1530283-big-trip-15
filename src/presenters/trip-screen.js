@@ -1,6 +1,6 @@
 import { remove, rerender } from '../utils/render.js';
 import { sortByBasePrice, sortByStartDate, sortByTime, filter } from '../utils/point.js';
-import { SortType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction } from '../const.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
@@ -48,6 +48,7 @@ export default class TripScreenPresenter {
     this._renderTripEventsView();
 
     this._filterModel.addObserver(this._handleModelChange);
+    this._pointsModel.addObserver(this._handleModelChange);
   }
 
   destroy() {
@@ -166,14 +167,31 @@ export default class TripScreenPresenter {
         break;
     }
 
-    console.log('!!');
-    this._renderPointList();
   }
 
-  _handleModelChange() {
-    this._sortType = SortType.DAY;
-    this._renderSortBar();
-    this._renderPointList();
+  _handleModelChange(updateType, payload) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        if (this._pointPresenters.has(payload.id)) {
+          console.log('!');
+          this._pointPresenters.get(payload.id).init(payload);
+        }
+        break;
+
+      case UpdateType.MINOR:
+        this._sortType = SortType.DAY;
+        this._renderSortBar();
+        this._renderPointList();
+        break;
+
+      case UpdateType.MAJOR:
+        this._sortType = SortType.DAY;
+        this._renderSortBar();
+        this._renderPointList();
+        break;
+
+    }
+
   }
 
   _closeNewPoint() {

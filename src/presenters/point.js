@@ -3,7 +3,7 @@ import { render, rerender, remove } from '../utils/render.js';
 
 import PointView from '../views/point.js';
 import EditPointView from '../views/edit-point.js';
-import { UserAction } from '../const.js';
+import { UserAction, UpdateType } from '../const.js';
 
 export default class PointPresenter {
   constructor({ container, offers, destinations, closeAllEditPoints, handlePointViewAction }) {
@@ -23,6 +23,7 @@ export default class PointPresenter {
     this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
     this._handleResetButtonClick = this._handleResetButtonClick.bind(this);
     this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
+    this._handleFavoriteButtonClick = this._handleFavoriteButtonClick.bind(this);
   }
 
   init(point) {
@@ -37,6 +38,7 @@ export default class PointPresenter {
     } else {
       this._currentView = new PointView(point);
       this._currentView.setOpenButtonClickHandler(this._handleOpenButtonClick);
+      this._currentView.setFavoriteButtonClickHandler(this._handleFavoriteButtonClick);
     }
 
     rerender(this._currentView, prevView, this._pointContainer);
@@ -88,11 +90,20 @@ export default class PointPresenter {
 
   _handleResetButtonClick(payload) {
     console.log('Delete action', payload);
-    this._changePoint(UserAction.DELETE_POINT, null, payload);
+    this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
   }
 
   _handleSubmitButtonClick(payload) {
     console.log('Submit payload', payload);
-    this._changePoint(UserAction.UPDATE_POINT, null, payload);
+    this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
+  }
+
+  _handleFavoriteButtonClick() {
+    const updatedPoint = {
+      ...this._point,
+      isFavorite: !this._point.isFavorite,
+    };
+
+    this._changePoint(UserAction.UPDATE_POINT, UpdateType.PATCH, updatedPoint);
   }
 }

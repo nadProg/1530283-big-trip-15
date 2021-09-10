@@ -1,5 +1,5 @@
 import { isEsc } from '../utils/common.js';
-import { Place, UserAction } from '../const.js';
+import { Place, UserAction, UpdateType } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
 
 import EditPointView from '../views/edit-point.js';
@@ -58,6 +58,6 @@ export default class NewPointPresenter {
 
   _handleSubmitButtonClick(payload) {
     console.log('Submit payload', payload);
-    this._changeFilm(UserAction.CREATE_POINT, null, payload);
+    this._changeFilm(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
   }
 }

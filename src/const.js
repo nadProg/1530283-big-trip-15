@@ -117,3 +117,9 @@ export const UserAction = {
   UPDATE_POINT: 'update-point',
   DELETE_POINT: 'delete-point',
 };
+
+export const UpdateType = {
+  PATCH: 'patch',
+  MINOR: 'minor',
+  MAJOR: 'major',
+};

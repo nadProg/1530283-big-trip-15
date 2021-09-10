@@ -1,5 +1,5 @@
 import { render } from '../utils/render.js';
-import { FilterType, Place, Screen } from '../const.js';
+import { FilterType, Place, Screen, UpdateType } from '../const.js';
 
 import PointsModel from '../models/points.js';
 import FilterModel from '../models/filter.js';
@@ -128,7 +128,7 @@ export default class ApplicationPresenter {
 
   _handleFilterChange(filter) {
     if (this._filterModel.getFilter() !== filter) {
-      this._filterModel.setFilter(null, filter);
+      this._filterModel.setFilter(UpdateType.MINOR, filter);
     }
   }
 
