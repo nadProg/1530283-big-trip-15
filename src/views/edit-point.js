@@ -49,6 +49,8 @@ const createEditPointTemplate = (point) => {
 
   const destinationPhotosTemplate = destination.pictures.map(createDestinationPhoto).join('');
 
+  const resetButtonText = isNew ? 'Cancel' : 'Delete';
+
   return `
     <li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -95,7 +97,7 @@ const createEditPointTemplate = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">${resetButtonText}</button>
           ${!isNew ? `
             <button class="event__rollup-btn" type="button">
               <span class="visually-hidden">Open event</span>
@@ -164,6 +166,14 @@ export default class EditPointView extends SmartView {
     return createEditPointTemplate(this._data);
   }
 
+  enable() {
+    // Enable form
+  }
+
+  disable() {
+    // Disable form
+  }
+
   setRollupButtonClickHandler(callback) {
     this._callback.rollupButtonClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
@@ -187,7 +197,7 @@ export default class EditPointView extends SmartView {
     }
 
     this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
-    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._resetButtonClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetButtonClickHandler);
   }
 
   _updateAvailableOffers(newType) {
@@ -209,11 +219,15 @@ export default class EditPointView extends SmartView {
     this._callback.rollupButtonClick();
   }
 
-  _submitButtonClickHandler() {
+  _submitButtonClickHandler(evt) {
+    evt.preventDefault();
+
     this._callback.submitButtonClick();
   }
 
-  _resetButtonClickHandler() {
+  _resetButtonClickHandler(evt) {
+    evt.preventDefault();
+
     this._callback.resetButtonClick();
   }
 

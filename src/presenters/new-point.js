@@ -19,6 +19,7 @@ export default class NewPointPresenter {
     // this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
     // this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
+    this._handleResetButtonClick = this._handleResetButtonClick.bind(this);
   }
 
   init() {
@@ -27,6 +28,9 @@ export default class NewPointPresenter {
     }
 
     this._newPointView = new EditPointView(null, this._offers, this._destinations);
+
+    this._newPointView.setResetButtonClickHandler(this._handleResetButtonClick);
+
     render(this._pointContainer, this._newPointView, Place.AFTER_BEGIN);
 
     window.addEventListener('keydown', this._handleWindowKeydown);
@@ -47,5 +51,9 @@ export default class NewPointPresenter {
 
       this.destroy();
     }
+  }
+
+  _handleResetButtonClick() {
+    this.destroy();
   }
 }
