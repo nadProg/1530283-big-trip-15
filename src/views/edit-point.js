@@ -153,7 +153,7 @@ export default class EditPointView extends SmartView {
     this._resetButtonClickHandler = this._resetButtonClickHandler.bind(this);
     this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
-    this._changeDestination = this._changeDestination.bind(this);
+    this._inputDestination = this._inputDestination.bind(this);
     this._changeOffers = this._changeOffers.bind(this);
     this._changeType = this._changeType.bind(this);
     this._changeBasePrice = this._changeBasePrice.bind(this);
@@ -221,7 +221,7 @@ export default class EditPointView extends SmartView {
     }
 
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeType);
-    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._changeDestination);
+    this.getElement().querySelector('.event__input--destination').addEventListener('input', this._inputDestination);
     this.getElement().querySelector('.event__input--price').addEventListener('change', this._changeBasePrice);
   }
 
@@ -266,7 +266,7 @@ export default class EditPointView extends SmartView {
     });
   }
 
-  _changeDestination(evt) {
+  _inputDestination(evt) {
     const input = evt.target;
     const { value: destinationName } = input;
     const destination = this._data.availableDestinations.find(({ name }) => name === destinationName);
@@ -282,6 +282,11 @@ export default class EditPointView extends SmartView {
   }
 
   _changeBasePrice(evt) {
-    this.updateData({ basePrice: Number(evt.target.value) });
+    this.updateData({
+      basePrice: Number(evt.target.value),
+    },
+    {
+      isElementUpdate: false,
+    });
   }
 }
