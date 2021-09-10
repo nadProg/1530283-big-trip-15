@@ -148,10 +148,13 @@ export default class EditPointView extends SmartView {
 
     this._offers = [ ...offers ];
 
+    this._resetButtonClickHandler = this._resetButtonClickHandler.bind(this);
+    this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._changeDestination = this._changeDestination.bind(this);
     this._changeOffers = this._changeOffers.bind(this);
     this._changeType = this._changeType.bind(this);
+    this._changeBasePrice = this._changeBasePrice.bind(this);
 
     this._updateAvailableOffers(this._data.type);
     this.restoreHandlers();
@@ -166,11 +169,25 @@ export default class EditPointView extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
   }
 
+  setSubmitButtonClickHandler(callback) {
+    this._callback.submitButtonClick = callback;
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
+  }
+
+  setResetButtonClickHandler(callback) {
+    this._callback.resetButtonClick = callback;
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._resetButtonClickHandler);
+  }
+
   restoreHandlers() {
+    this._setInnerHandlers();
+
     if (!this._data.isNew) {
       this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
     }
-    this._setInnerHandlers();
+
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._resetButtonClickHandler);
   }
 
   _updateAvailableOffers(newType) {
@@ -185,18 +202,27 @@ export default class EditPointView extends SmartView {
 
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeType);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._changeDestination);
+    this.getElement().querySelector('.event__input--price').addEventListener('change', this._changeBasePrice);
   }
 
-  // Удаление
+  _rollupButtonClickHandler() {
+    this._callback.rollupButtonClick();
+  }
 
-  // Сохранение
+  _submitButtonClickHandler() {
+    this._callback.submitButtonClick();
+  }
+
+  _resetButtonClickHandler() {
+    this._callback.resetButtonClick();
+  }
 
   _changeOffers(evt) {
     const { checked, value } = evt.target;
     let offers = [];
 
     if (checked) {
-      const newOffer = this._availableOffers.find(({ title }) => title === value);
+      const newOffer = this._data.availableOffers.find(({ title }) => title === value);
       if (newOffer) {
         offers.push(newOffer);
       }
@@ -231,7 +257,7 @@ export default class EditPointView extends SmartView {
     input.reportValidity();
   }
 
-  _rollupButtonClickHandler() {
-    this._callback.rollupButtonClick();
+  _changeBasePrice(evt) {
+    this.updateData({ basePrice: Number(evt.target.value) });
   }
 }

@@ -30,6 +30,8 @@ export default class TripScreenPresenter {
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
     this._handleSortBarChange = this._handleSortBarChange.bind(this);
     this._handleModelChange = this._handleModelChange.bind(this);
+
+    this._closeNewPoint = this._closeNewPoint.bind(this);
   }
 
   init() {
@@ -49,16 +51,19 @@ export default class TripScreenPresenter {
   }
 
   addNewPoint() {
-    if (!this._newPointPresenter) {
-      this._newPointPresenter  = new NewPointPresenter({
-        container: this._tripEventsListView,
-        offers: this._offers,
-        destinations: this._destinations,
-        closeAllEditPoints: this._closeAllEditPoints,
-      });
+    this._closeAllEditPoints();
 
-      this._newPointPresenter.init();
-    }
+    // if (!this._newPointPresenter) {
+    this._newPointPresenter  = new NewPointPresenter({
+      container: this._tripEventsListView,
+      offers: this._offers,
+      destinations: this._destinations,
+      closeAllEditPoints: this._closeAllEditPoints,
+      closeNewPoint: this._closeNewPoint,
+    });
+
+    this._newPointPresenter.init();
+    // }
   }
 
   _renderSortBar() {
@@ -100,6 +105,11 @@ export default class TripScreenPresenter {
       pointPresenter.init(point);
     });
 
+    if (this._newPointPresenter) {
+      this._newPointPresenter.destroy();
+      this._newPointPresenter = null;
+    }
+
     rerender(this._tripEventsListView, prevTripEventsListView, this._tripEventsView);
   }
 
@@ -118,10 +128,10 @@ export default class TripScreenPresenter {
       pointPresenter.setViewMode();
     }
 
-    // if (this._newPointPresenter) {
-    //   this._newPointPresenter.destroy();
-    //   this._newPointPresenter = null;
-    // }
+    if (this._newPointPresenter) {
+      this._newPointPresenter.destroy();
+      this._newPointPresenter = null;
+    }
   }
 
   _handleSortBarChange(sortType) {
@@ -138,5 +148,9 @@ export default class TripScreenPresenter {
     this._sortType = SortType.DAY;
     this._renderSortBar();
     this._renderPointList();
+  }
+
+  _closeNewPoint() {
+    this._newPointPresenter = null;
   }
 }
