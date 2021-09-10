@@ -9,7 +9,7 @@ export default class SmartView extends AbstractView {
     this._data = {};
   }
 
-  updateData(update, justDataUpdating) {
+  updateData(update, { isElementUpdate = true } = {}) {
     if (!update) {
       return;
     }
@@ -18,12 +18,10 @@ export default class SmartView extends AbstractView {
       ...this._data,
       ...update,
     };
-
-    if (justDataUpdating) {
-      return;
+    console.log(this._data);
+    if (isElementUpdate) {
+      this.updateElement();
     }
-
-    this.updateElement();
   }
 
   updateElement() {

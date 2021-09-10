@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 
-import { PointType } from '../const.js';
+import { PointType, DEFAULT_POINT } from '../const.js';
 import { formatInputDate } from '../utils/date.js';
 
 const createEventTypeItemTemplate = (value) => {
@@ -29,12 +29,14 @@ const createOfferTemplate = ({ title, price }, index, isChecked = false) => `
 
 const createDestinationPhoto = ({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`;
 
-const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: chosenType, destination }, availableOffers, destinations) => {
+const createEditPointTemplate = (point) => {
+  const { date, basePrice, offers: chosenOffers, type: chosenType, destination, availableOffers, availableDestinations, isNew } = point;
+
   const eventTypeItemsTemplate = Object.values(PointType)
     .map(createEventTypeItemTemplate)
     .join('');
 
-  const destinatonOptionsTemplate = destinations
+  const destinatonOptionsTemplate = availableDestinations
     .map(({ name }) => createDestinationOptionTemplate(name))
     .join('');
 
@@ -89,14 +91,15 @@ const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: 
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price" type="number" min="0" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          ${!isNew ? `
+            <button class="event__rollup-btn" type="button">
+              <span class="visually-hidden">Open event</span>
+            </button>` : ''}
         </header>
         <section class="event__details">
           ${availableOffers.length ? `
@@ -128,25 +131,33 @@ const createEditPointTemplate = ({ date, basePrice, offers: chosenOffers, type: 
 };
 
 export default class EditPointView extends SmartView {
-  constructor(point = {}, offers = [], destinations = []) {
+  constructor(point, offers, destinations) {
     super();
 
-    this._data = { ...point };
-    this._offers = [ ...offers ];
-    this._destinations = [ ...destinations ];
+    this._data = point ?
+      {
+        ...point,
+        availableDestinations: [ ...destinations ],
+      } :
+      {
+        ...DEFAULT_POINT,
+        type: offers[0].type,
+        destination: destinations[0],
+        availableDestinations: [ ...destinations ],
+      };
 
-    this._availableOffers = [];
+    this._offers = [ ...offers ];
 
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._changeOffers = this._changeOffers.bind(this);
     this._changeType = this._changeType.bind(this);
 
-    this._updateAvailableOffers();
+    this._updateAvailableOffers(this._data.type);
     this.restoreHandlers();
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._data, this._availableOffers, this._destinations);
+    return createEditPointTemplate(this._data);
   }
 
   setRollupButtonClickHandler(callback) {
@@ -155,16 +166,19 @@ export default class EditPointView extends SmartView {
   }
 
   restoreHandlers() {
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+    if (!this._data.isNew) {
+      this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+    }
     this._setInnerHandlers();
   }
 
-  _updateAvailableOffers() {
-    this._availableOffers = this._offers.find(({ type }) => type === this._data.type).offers;
+  _updateAvailableOffers(newType) {
+    const availableOffers = [ ...this._offers.find(({ type }) => type === newType).offers];
+    this.updateData({ availableOffers }, { isElementUpdate: false });
   }
 
   _setInnerHandlers() {
-    if (this._availableOffers.length) {
+    if (this._data.availableOffers.length) {
       this.getElement().querySelector('.event__available-offers').addEventListener('change', this._changeOffers);
     }
 
@@ -177,21 +191,26 @@ export default class EditPointView extends SmartView {
 
   _changeOffers(evt) {
     const { checked, value } = evt.target;
+    let offers = [];
+
     if (checked) {
       const newOffer = this._availableOffers.find(({ title }) => title === value);
       if (newOffer) {
-        this._data.offers.push(newOffer);
+        offers.push(newOffer);
       }
     } else {
-      this._data.offers = this._data.offers.filter(({ title }) => title !== value);
+      offers = this._data.offers.filter(({ title }) => title !== value);
     }
+
+    this.updateData({ offers }, { isElementUpdate: false });
   }
 
   _changeType(evt) {
-    this._updateAvailableOffers();
+    const { value: type } = evt.target;
+    this._updateAvailableOffers(type);
     this.updateData({
+      type,
       offers: [],
-      type: evt.target.value,
     });
   }
 

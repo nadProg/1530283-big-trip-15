@@ -1,12 +1,13 @@
 import { remove, rerender } from '../utils/render.js';
 import { sortByBasePrice, sortByStartDate, sortByTime, filter } from '../utils/point.js';
+import { SortType } from '../const.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
 import TripEventsListView from '../views/trip-events-list.js';
 
 import PointPresenter from '../presenters/point.js';
-import { SortType } from '../const.js';
+import NewPointPresenter from '../presenters/new-point.js';
 
 export default class TripScreenPresenter {
   constructor({ container, pointsModel, filterModel, offers, destinations }) {
@@ -24,6 +25,7 @@ export default class TripScreenPresenter {
     this._tripEventsListView = null;
 
     this._pointPresenters = new Map();
+    this._newPointPresenter = null;
 
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
     this._handleSortBarChange = this._handleSortBarChange.bind(this);
@@ -44,6 +46,19 @@ export default class TripScreenPresenter {
     this._tripEventsView = null;
     // this._sortBarView = null;
     // this._tripEventsListView = null;
+  }
+
+  addNewPoint() {
+    if (!this._newPointPresenter) {
+      this._newPointPresenter  = new NewPointPresenter({
+        container: this._tripEventsListView,
+        offers: this._offers,
+        destinations: this._destinations,
+        closeAllEditPoints: this._closeAllEditPoints,
+      });
+
+      this._newPointPresenter.init();
+    }
   }
 
   _renderSortBar() {
@@ -102,6 +117,11 @@ export default class TripScreenPresenter {
     for (const pointPresenter of this._pointPresenters.values()) {
       pointPresenter.setViewMode();
     }
+
+    // if (this._newPointPresenter) {
+    //   this._newPointPresenter.destroy();
+    //   this._newPointPresenter = null;
+    // }
   }
 
   _handleSortBarChange(sortType) {

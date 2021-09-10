@@ -133,6 +133,7 @@ export default class ApplicationPresenter {
   _handleAddEventButtonClick() {
     if (this._screen === Screen.TRIP) {
       console.log('click');
+      this._tripSceenPresenter.addNewPoint();
     }
   }
 }

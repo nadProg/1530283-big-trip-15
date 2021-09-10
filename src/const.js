@@ -101,3 +101,13 @@ export const Screen = {
   TRIP: 'trip',
   STATISCTICS: 'statisctics',
 };
+
+export const DEFAULT_POINT = {
+  date: {
+    end: new Date(),
+    start: new Date(),
+  },
+  basePrice: 100,
+  offers: [],
+  isNew: true,
+};
