@@ -1,5 +1,6 @@
-import { render } from '../utils/render.js';
+import { render, rerender } from '../utils/render.js';
 import { FilterType, Place, Screen, UpdateType } from '../const.js';
+import { getTripPrice } from '../utils/point.js';
 
 import PointsModel from '../models/points.js';
 import FilterModel from '../models/filter.js';
@@ -32,7 +33,7 @@ export default class ApplicationPresenter {
     this._headerView = new HeaderView();
     this._headerContainerView = new HeaderContainerView();
     this._tripMainView = new TripMainView();
-    this._tripInfoView = new TripInfoView();
+    this._tripInfoView = null;
     this._tripControlsView = new TripControlsView();
     this._navigationView = new NavigationView();
     this._filtersView = new FiltersView();
@@ -45,6 +46,10 @@ export default class ApplicationPresenter {
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
     this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
+
+    this._handlePointModelChange = this._handlePointModelChange.bind(this);
+
+    this._pointsModel.addObserver(this._handlePointModelChange);
   }
 
   async init() {
@@ -57,7 +62,7 @@ export default class ApplicationPresenter {
       this._api.getDestinations(),
     ]);
 
-    this._pointsModel.setPoints(null, points);
+    this._pointsModel.setPoints(UpdateType.MINOR, points);
     this._offers = [ ...offers ],
     this._destinations = [ ...destinations ];
 
@@ -90,7 +95,7 @@ export default class ApplicationPresenter {
 
   _renderTripMain() {
     render(this._headerContainerView, this._tripMainView);
-    render(this._tripMainView, this._tripInfoView);
+    this._renderTripInfo();
     this._renderTripControls();
     render(this._tripMainView, this._eventAddButtonView);
     this._eventAddButtonView.setClickHandler(this._handleAddEventButtonClick);
@@ -107,6 +112,14 @@ export default class ApplicationPresenter {
   _renderMain() {
     render(this._applicationContainer, this._mainView, Place.AFTER_BEGIN);
     render(this._mainView, this._containerView);
+  }
+
+  _renderTripInfo() {
+    const prevTripInfoView = this._tripInfoView;
+    this._tripInfoView = new TripInfoView({
+      price: getTripPrice(this._pointsModel.getAll()),
+    });
+    rerender(this._tripInfoView, prevTripInfoView, this._tripMainView);
   }
 
   _renderScreen(screen) {
@@ -142,5 +155,11 @@ export default class ApplicationPresenter {
 
   _resetAddNewPointMode() {
     this._eventAddButtonView.toggleDisabled();
+  }
+
+  _handlePointModelChange(updateType) {
+    if (updateType === UpdateType.MINOR) {
+      this._renderTripInfo();
+    }
   }
 }

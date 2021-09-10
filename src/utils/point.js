@@ -12,3 +12,9 @@ export const filter = {
   [FilterType.PAST]: (points) => points.filter(({ date }) => isPointDuringToday(date) || isEndInPast(date)),
   [FilterType.FUTURE]: (points) => points.filter(({ date }) => isPointDuringToday(date) || isStartInFuture(date)),
 };
+
+export const getTripPrice = (points) => points.reduce((tripPrice, point) => {
+  console.log(point);
+  const offersPrice = point.offers.reduce((price, offer) => price + offer.price, 0);
+  return tripPrice + point.basePrice + offersPrice;
+}, 0);
