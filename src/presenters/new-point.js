@@ -5,7 +5,7 @@ import { render, rerender, remove } from '../utils/render.js';
 import EditPointView from '../views/edit-point.js';
 
 export default class NewPointPresenter {
-  constructor({ container, offers, destinations, closeNewPoint, closeAllEditPoints }) {
+  constructor({ container, offers, destinations, closeNewPoint }) {
     this._pointContainer = container;
     this._editMode = false;
 
@@ -22,14 +22,11 @@ export default class NewPointPresenter {
   }
 
   init() {
-    // this._closeAllEditPoints();
-
     if (this._newPointView) {
       return;
     }
 
     this._newPointView = new EditPointView(null, this._offers, this._destinations);
-
     render(this._pointContainer, this._newPointView, Place.AFTER_BEGIN);
 
     window.addEventListener('keydown', this._handleWindowKeydown);

@@ -44,6 +44,7 @@ export default class ApplicationPresenter {
 
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
+    this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
   }
 
   async init() {
@@ -75,6 +76,7 @@ export default class ApplicationPresenter {
       pointsModel: this._pointsModel,
       filterModel: this._filterModel,
       destinations: this._destinations,
+      resetAddNewPointMode: this._resetAddNewPointMode,
     });
 
     this._renderScreen(Screen.TRIP);
@@ -134,6 +136,11 @@ export default class ApplicationPresenter {
     if (this._screen === Screen.TRIP) {
       console.log('click');
       this._tripSceenPresenter.addNewPoint();
+      this._eventAddButtonView.toggleDisabled();
     }
+  }
+
+  _resetAddNewPointMode() {
+    this._eventAddButtonView.toggleDisabled();
   }
 }

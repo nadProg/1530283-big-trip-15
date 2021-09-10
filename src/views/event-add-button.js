@@ -20,6 +20,10 @@ export default class EventAddButtonView extends AbstractView {
     this.getElement().addEventListener('click', this._clickHandler);
   }
 
+  toggleDisabled() {
+    this.getElement().disabled = !this.getElement().disabled;
+  }
+
   _clickHandler() {
     this._callback.click();
   }

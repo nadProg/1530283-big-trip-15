@@ -10,7 +10,7 @@ import PointPresenter from '../presenters/point.js';
 import NewPointPresenter from '../presenters/new-point.js';
 
 export default class TripScreenPresenter {
-  constructor({ container, pointsModel, filterModel, offers, destinations }) {
+  constructor({ container, pointsModel, filterModel, offers, destinations, resetAddNewPointMode }) {
     this._tripScreenContainer = container;
 
     this._filterModel = filterModel;
@@ -27,11 +27,17 @@ export default class TripScreenPresenter {
     this._pointPresenters = new Map();
     this._newPointPresenter = null;
 
+    this._resetAddNewPointMode = resetAddNewPointMode;
+
     this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
     this._handleSortBarChange = this._handleSortBarChange.bind(this);
     this._handleModelChange = this._handleModelChange.bind(this);
 
     this._closeNewPoint = this._closeNewPoint.bind(this);
+  }
+
+  get addNewPointMode() {
+    return !!this._newPointPresenter;
   }
 
   init() {
@@ -53,7 +59,6 @@ export default class TripScreenPresenter {
   addNewPoint() {
     this._closeAllEditPoints();
 
-    // if (!this._newPointPresenter) {
     this._newPointPresenter  = new NewPointPresenter({
       container: this._tripEventsListView,
       offers: this._offers,
@@ -63,7 +68,6 @@ export default class TripScreenPresenter {
     });
 
     this._newPointPresenter.init();
-    // }
   }
 
   _renderSortBar() {
@@ -107,7 +111,6 @@ export default class TripScreenPresenter {
 
     if (this._newPointPresenter) {
       this._newPointPresenter.destroy();
-      this._newPointPresenter = null;
     }
 
     rerender(this._tripEventsListView, prevTripEventsListView, this._tripEventsView);
@@ -130,7 +133,6 @@ export default class TripScreenPresenter {
 
     if (this._newPointPresenter) {
       this._newPointPresenter.destroy();
-      this._newPointPresenter = null;
     }
   }
 
@@ -152,5 +154,6 @@ export default class TripScreenPresenter {
 
   _closeNewPoint() {
     this._newPointPresenter = null;
+    this._resetAddNewPointMode();
   }
 }
