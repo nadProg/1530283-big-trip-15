@@ -1,5 +1,6 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { formatter } from '../utils/statistics.js';
 
 import {
   STATISTICS_CHART_BAR_HEIGHT, STATISCTICS_CHART_TYPE, STATISTICS_CHART_OPTIONS
@@ -7,53 +8,80 @@ import {
 
 import AbstractView from './abstract.js';
 
-const createStatisticsTemplate = () => `
-  <section class="statistics">
-    <h2 class="visually-hidden">Trip statistics</h2>
-
-    <div class="statistics__item">
-      <canvas class="statistics__chart" id="money" width="900"></canvas>
-    </div>
-
-    <div class="statistics__item">
-      <canvas class="statistics__chart" id="type" width="900"></canvas>
-    </div>
-
-    <div class="statistics__item">
-      <canvas class="statistics__chart" id="time-spend" width="900"></canvas>
-    </div>
-  </section>
+const createCanvasTemplate = (type) => `
+  <div class="statistics__item">
+    <canvas class="statistics__chart" id="${type}" width="900"></canvas>
+  </div>
 `;
 
+const createStatisticsTemplate = (statistics) => {
+  const canvasTemplates = statistics
+    .map(({ type }) => createCanvasTemplate(type))
+    .join('');
+
+  return `
+    <section class="statistics">
+      <h2 class="visually-hidden">Trip statistics</h2>
+      ${canvasTemplates}
+    </section>
+  `;
+};
+
 export default class StatisticsView extends AbstractView {
-  constructor() {
+  constructor(statistics) {
     super();
+
+    this._statistics = statistics;
   }
 
   getTemplate() {
-    return createStatisticsTemplate();
+    setTimeout(() => this._renderCharts());
+    return createStatisticsTemplate(this._statistics);
+
   }
 
   _renderCharts() {
-    this._renderChart('money', {});
-    this._renderChart('type', {});
-    this._renderChart('time-spend', {});
+    Object.values(this._statistics).forEach(({ type, dataset }) => {
+      this._renderChart(type, dataset);
+    });
   }
 
-  _renderChart(id, statistics) {
-    if (!statistics) {
+  _renderChart(type, dataset) {
+    if (!dataset.data.length ) {
       return;
     }
 
-    const statisticsContext = this.getElement().querySelector(`#${id}`);
+    const statisticsContext = this.getElement().querySelector(`#${type}`);
 
-    statisticsContext.height = STATISTICS_CHART_BAR_HEIGHT * 5;
+    statisticsContext.height = STATISTICS_CHART_BAR_HEIGHT * dataset.data.length;
 
     new Chart(statisticsContext, {
       plugins: [ChartDataLabels],
       type: STATISCTICS_CHART_TYPE,
-      options: { ...STATISTICS_CHART_OPTIONS},
-      // data: getStatisticsChartData(genresStatistic),
+      options: {
+        ...STATISTICS_CHART_OPTIONS,
+        title: {
+          ...STATISTICS_CHART_OPTIONS.title,
+          text: type.toUpperCase(),
+        },
+        plugins: {
+          datalabels: {
+            ...STATISTICS_CHART_OPTIONS.plugins.datalabels,
+            formatter: formatter[type],
+          },
+        },
+      },
+      data: {
+        labels: dataset.labels.map((label) => label.toUpperCase()),
+        datasets: [{
+          data: [ ...dataset.data ],
+          anchor: 'start',
+          barThickness: 44,
+          minBarLength: 50,
+          backgroundColor: '#ffffff',
+          hoverBackgroundColor: '#ffffff',
+        }],
+      },
     });
   }
 }

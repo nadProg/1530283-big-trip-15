@@ -21,7 +21,7 @@ export const STATISTICS_CHART_OPTIONS = {
       color: '#000000',
       anchor: 'end',
       align: 'start',
-      formatter: (val) => `€ ${val}`,
+      // formatter: (val) => `€ ${val}`,
     },
   },
   title: {
@@ -42,7 +42,6 @@ export const STATISTICS_CHART_OPTIONS = {
         display: false,
         drawBorder: false,
       },
-      barThickness: 44,
     }],
     xAxes: [{
       ticks: {
@@ -53,7 +52,6 @@ export const STATISTICS_CHART_OPTIONS = {
         display: false,
         drawBorder: false,
       },
-      minBarLength: 50,
     }],
   },
   legend: {
@@ -131,4 +129,10 @@ export const UpdateType = {
   PATCH: 'patch',
   MINOR: 'minor',
   MAJOR: 'major',
+};
+
+export const StatiscticsType = {
+  MONEY: 'money',
+  TIMES: 'times',
+  TIME_SPEND: 'time-spend',
 };

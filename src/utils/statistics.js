@@ -1,4 +1,6 @@
-import { getDuration } from './date';
+import { duration } from 'dayjs';
+import { StatiscticsType } from '../const';
+import { formatDuration, getDuration } from './date';
 
 const getStatistics = (points) => {
   const statistics = new Map();
@@ -6,18 +8,18 @@ const getStatistics = (points) => {
   points.forEach(({ type, basePrice, date }) => {
     if (!statistics.has(type)) {
       statistics.set(type, {
-        times: 0,
-        timeSpend: getDuration(),
-        money: 0,
+        [StatiscticsType.MONEY]: 0,
+        [StatiscticsType.TIMES]: 0,
+        [StatiscticsType.TIME_SPEND]: getDuration(),
       });
     }
 
     const currentStatistics = statistics.get(type);
 
     statistics.set(type, {
-      times: currentStatistics.times + 1,
-      timeSpend: currentStatistics.timeSpend.add(getDuration(date.start, date.end)),
-      money: currentStatistics.money + basePrice,
+      [StatiscticsType.TIMES]: currentStatistics[StatiscticsType.TIMES] + 1,
+      [StatiscticsType.MONEY]: currentStatistics[StatiscticsType.MONEY] + basePrice,
+      [StatiscticsType.TIME_SPEND]: currentStatistics[StatiscticsType.TIME_SPEND].add(getDuration(date.start, date.end)),
     });
   });
 
@@ -28,7 +30,7 @@ const getDatasetFromStatistics = (statisctics, key) => {
   statisctics = [ ...statisctics ];
 
   statisctics.sort(([, datumA], [, datumB]) => {
-    if (key === 'timeSpend') {
+    if (key === StatiscticsType.TIME_SPEND) {
       return datumB[key].$ms - datumA[key].$ms;
     }
 
@@ -45,21 +47,24 @@ const getDatasetFromStatistics = (statisctics, key) => {
     dataset.labels.push(label);
   });
 
+  if (key === StatiscticsType.TIME_SPEND) {
+    dataset.data = dataset.data.map(({ $ms }) => $ms);
+  }
+
   return dataset;
 };
 
 export const getStatisticsDatasets = (points) => {
   const statisctics = getStatistics(points);
 
-  console.log(statisctics);
+  return Object.values(StatiscticsType).map((type) => ({
+    type,
+    dataset: getDatasetFromStatistics(statisctics, type),
+  }));
+};
 
-  console.log('Money');
-  console.log(getDatasetFromStatistics(statisctics, 'money'));
-
-  console.log('Type');
-  console.log(getDatasetFromStatistics(statisctics, 'times'));
-
-  console.log('TimeSpend');
-  console.log(getDatasetFromStatistics(statisctics, 'timeSpend'));
-
+export const formatter = {
+  [StatiscticsType.MONEY]:  (value) => `€ ${value}`,
+  [StatiscticsType.TIMES]: (value) => value,
+  [StatiscticsType.TIME_SPEND]: (value) => formatDuration(value),
 };

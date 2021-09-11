@@ -17,6 +17,10 @@ export const getDuration = (startDate, endDate) => {
 };
 
 export const formatDuration = (duration) => {
+  if (typeof duration === 'number') {
+    duration = dayjs.duration(duration);
+  }
+
   const [days, hours, minutes] = duration.format('DD[D] HH[H] mm[M]').split(' ');
 
   if (days.startsWith('00')) {

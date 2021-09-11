@@ -150,21 +150,14 @@ export default class ApplicationPresenter {
       case Screen.STATISCTICS:
         this._tableSceenPresenter.destroy();
         this._renderStatistics();
-
-        console.log('Statistics');
-        console.log(getStatisticsDatasets(this._pointsModel.getAll()));
-
-        // console.log('Type statistics');
-        // console.log(getTypeStatistics(this._pointsModel.getAll()));
-
-        // console.log('Time-spend statistics');
-        // console.log(getMoneyStatistics(this._pointsModel.getAll()));
         break;
     }
   }
 
   _renderStatistics() {
-    this._statisticsView = new StatisticsView();
+    const statistics = getStatisticsDatasets(this._pointsModel.getAll());
+    console.log(statistics);
+    this._statisticsView = new StatisticsView(statistics);
     render(this._containerView, this._statisticsView);
   }
 
