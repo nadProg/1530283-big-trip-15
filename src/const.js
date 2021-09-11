@@ -126,6 +126,7 @@ export const UserAction = {
 };
 
 export const UpdateType = {
+  INIT: 'init',
   PATCH: 'patch',
   MINOR: 'minor',
   MAJOR: 'major',

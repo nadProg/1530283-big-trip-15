@@ -180,7 +180,6 @@ export default class TableScreenPresenter {
         break;
 
       case UpdateType.MINOR:
-        this._sortType = SortType.DAY;
         this._renderSortBar();
         this._renderPointList();
         break;
@@ -190,9 +189,7 @@ export default class TableScreenPresenter {
         this._renderSortBar();
         this._renderPointList();
         break;
-
     }
-
   }
 
   _closeNewPoint() {

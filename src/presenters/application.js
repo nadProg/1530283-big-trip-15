@@ -70,7 +70,7 @@ export default class ApplicationPresenter {
       this._api.getDestinations(),
     ]);
 
-    this._pointsModel.setPoints(UpdateType.MINOR, points);
+    this._pointsModel.setPoints(UpdateType.INIT, points);
     this._offers = [ ...offers ],
     this._destinations = [ ...destinations ];
 
@@ -170,7 +170,7 @@ export default class ApplicationPresenter {
 
   _handleFilterChange(filter) {
     if (this._filterModel.getFilter() !== filter) {
-      this._filterModel.setFilter(UpdateType.MINOR, filter);
+      this._filterModel.setFilter(UpdateType.MAJOR, filter);
     }
   }
 
@@ -187,7 +187,7 @@ export default class ApplicationPresenter {
   }
 
   _handlePointModelChange(updateType) {
-    if (updateType === UpdateType.MINOR) {
+    if (updateType === UpdateType.MINOR || updateType === UpdateType.INIT) {
       this._renderTripInfo();
     }
   }
