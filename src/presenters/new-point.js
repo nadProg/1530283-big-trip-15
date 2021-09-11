@@ -18,7 +18,7 @@ export default class NewPointPresenter {
     this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
     this._handleResetButtonClick = this._handleResetButtonClick.bind(this);
     this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
-    this._changeFilm = handlePointViewAction;
+    this._changePoint = handlePointViewAction;
   }
 
   init() {
@@ -58,6 +58,6 @@ export default class NewPointPresenter {
 
   _handleSubmitButtonClick(payload) {
     console.log('Submit payload', payload);
-    this._changeFilm(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
+    this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
   }
 }

@@ -142,3 +142,16 @@ export const COMMON_DATEPICKER_OPTIONS = {
   enableTime: true,
   dateFormat: 'd/m/y H:i',
 };
+
+export const Message = {
+  LOADING: 'Loading...',
+  CREATE_POINT: 'Click New Event to create your first point',
+  NO_FUTURE_POINTS: 'There are no future events now',
+  NO_PAST_POINTS: 'There are no past events now',
+};
+
+export const filterTypeToMessage = {
+  past: Message.NO_PAST_POINTS,
+  future: Message.NO_FUTURE_POINTS,
+  everything: Message.CREATE_POINT,
+};

@@ -1,10 +1,11 @@
-import { remove, rerender } from '../utils/render.js';
-import { sortByBasePrice, sortByStartDate, sortByTime, filter } from '../utils/point.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { remove, rerender, render } from '../utils/render.js';
+import { sortByBasePrice, sortByTime, filter } from '../utils/point.js';
+import { SortType, UpdateType, UserAction, filterTypeToMessage } from '../const.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
 import TripEventsListView from '../views/trip-events-list.js';
+import MessageView from '../views/message.js';
 
 import PointPresenter from './point.js';
 import NewPointPresenter from './new-point.js';
@@ -23,6 +24,7 @@ export default class TableScreenPresenter {
     this._tripEventsView = null;
     this._sortBarView = null;
     this._tripEventsListView = null;
+    this._messageView = null;
 
     this._pointPresenters = new Map();
     this._newPointPresenter = null;
@@ -56,8 +58,6 @@ export default class TableScreenPresenter {
 
     remove(this._tripEventsView);
     this._tripEventsView = null;
-    this._sortBarView = null;
-    this._tripEventsListView = null;
 
     this._filterModel.removeObserver(this._handleModelChange);
     this._pointsModel.removeObserver(this._handleModelChange);
@@ -65,6 +65,14 @@ export default class TableScreenPresenter {
 
   addNewPoint() {
     this._closeAllEditPoints();
+
+    console.log(this._pointPresenters.size);
+
+    if (!this._pointPresenters.size) {
+      this._removeMessage();
+      this._tripEventsListView = new TripEventsListView();
+      render(this._tripEventsView, this._tripEventsListView);
+    }
 
     this._newPointPresenter  = new NewPointPresenter({
       container: this._tripEventsListView,
@@ -79,17 +87,15 @@ export default class TableScreenPresenter {
   }
 
   _renderSortBar() {
-    const prevSortBarView = this._sortBarView;
     this._sortBarView = new SortBarView(this._sortType);
     this._sortBarView.setChangeHandler(this._handleSortBarChange);
-    rerender(this._sortBarView, prevSortBarView, this._tripEventsView);
+    render(this._tripEventsView, this._sortBarView);
   }
 
-  _renderPointList() {
-    const prevTripEventsListView = this._tripEventsListView;
+  _renderPointList(points) {
     this._tripEventsListView = new TripEventsListView();
 
-    const points = filter[this._filterModel.getFilter()](this._pointsModel.getAll());
+    this._pointPresenters.clear();
 
     switch (this._sortType) {
       case SortType.TIME:
@@ -99,8 +105,6 @@ export default class TableScreenPresenter {
         points.sort(sortByBasePrice);
         break;
     }
-
-    this._pointPresenters.clear();
 
     points.forEach((point) => {
       const pointPresenter = new PointPresenter({
@@ -119,17 +123,40 @@ export default class TableScreenPresenter {
       this._newPointPresenter.destroy();
     }
 
-    rerender(this._tripEventsListView, prevTripEventsListView, this._tripEventsView);
+    render(this._tripEventsView, this._tripEventsListView);
   }
 
   _renderTripEventsView() {
     const prevTripEventsView = this._tripEventsView;
+
+    if (this._messageView) {
+      this._removeMessage();
+    }
+
     this._tripEventsView = new TripEventsView();
 
-    this._renderSortBar();
-    this._renderPointList();
+    const points = filter[this._filterModel.getFilter()](this._pointsModel.getAll());
+
+    if (points.length) {
+      this._renderSortBar();
+      this._renderPointList(points);
+    } else {
+      this._pointPresenters.clear();
+      this._renderMessage();
+    }
 
     rerender(this._tripEventsView, prevTripEventsView, this._tableScreenContainer);
+  }
+
+  _renderMessage() {
+    const message = filterTypeToMessage[this._filterModel.getFilter()];
+    this._messageView = new MessageView(message);
+    render(this._tripEventsView, this._messageView);
+  }
+
+  _removeMessage() {
+    remove(this._messageView);
+    this._messageView = null;
   }
 
   _closeAllEditPoints() {
@@ -149,7 +176,7 @@ export default class TableScreenPresenter {
 
     this._sortType = sortType;
 
-    this._renderPointList();
+    this._renderTripEventsView();
   }
 
   _handlePointViewAction(userAction, updateType, payload) {
@@ -180,14 +207,12 @@ export default class TableScreenPresenter {
         break;
 
       case UpdateType.MINOR:
-        this._renderSortBar();
-        this._renderPointList();
+        this._renderTripEventsView();
         break;
 
       case UpdateType.MAJOR:
         this._sortType = SortType.DAY;
-        this._renderSortBar();
-        this._renderPointList();
+        this._renderTripEventsView();
         break;
     }
   }
@@ -195,5 +220,9 @@ export default class TableScreenPresenter {
   _closeNewPoint() {
     this._newPointPresenter = null;
     this._resetAddNewPointMode();
+
+    if (!this._pointPresenters.size) {
+      this._renderMessage();
+    }
   }
 }

@@ -70,7 +70,7 @@ export default class ApplicationPresenter {
       this._api.getDestinations(),
     ]);
 
-    this._pointsModel.setPoints(UpdateType.INIT, points);
+    this._pointsModel.setPoints(UpdateType.INIT, points.slice(0, 0));
     this._offers = [ ...offers ],
     this._destinations = [ ...destinations ];
 

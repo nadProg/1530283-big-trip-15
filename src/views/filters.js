@@ -13,15 +13,25 @@ const createFilterItemTemplate = (filter, isChecked, isDisabled) => `
   </div>
 `;
 
-const createFiltersTemplate = (activeFilter, filters) => `
-  <div class="trip-controls__filters">
-    <h2 class="visually-hidden">Filter events</h2>
-    <form class="trip-filters" action="#" method="get">
-      ${Object.values(filters).map(({ type, count }) => createFilterItemTemplate(type, type === activeFilter, !count)).join('')}
-      <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>
-  </div>
-`;
+const createFiltersTemplate = (activeFilter, filters) => {
+  const filterItemsTemplate = Object.values(filters)
+    .map(({ type, count }) => createFilterItemTemplate(
+      type,
+      type === activeFilter,
+      type !== FilterType.ALL && !count,
+    ))
+    .join('');
+
+  return `
+    <div class="trip-controls__filters">
+      <h2 class="visually-hidden">Filter events</h2>
+      <form class="trip-filters" action="#" method="get">
+        ${filterItemsTemplate}
+        <button class="visually-hidden" type="submit">Accept filter</button>
+      </form>
+    </div>
+  `;
+};
 
 export default class FiltersView extends AbstractView {
   constructor(activeFilter = FilterType.ALL, filters) {
