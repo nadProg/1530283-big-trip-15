@@ -88,9 +88,6 @@ export default class TripScreenPresenter {
     const points = filter[this._filterModel.getFilter()](this._pointsModel.getAll());
 
     switch (this._sortType) {
-      case SortType.DAY:
-        points.sort(sortByStartDate);
-        break;
       case SortType.TIME:
         points.sort(sortByTime);
         break;

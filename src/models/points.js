@@ -1,4 +1,6 @@
 import { updateItem } from '../utils/common.js';
+import { sortByStartDate } from '../utils/point.js';
+
 import AbstractObserver from '../utils/abstract-observer.js';
 
 export default class PointsModel extends AbstractObserver {
@@ -14,6 +16,7 @@ export default class PointsModel extends AbstractObserver {
 
   setPoints(updateType, points) {
     this._points = [ ...points ];
+    this._points.sort(sortByStartDate);
 
     this._notify(updateType, points);
   }
@@ -25,12 +28,14 @@ export default class PointsModel extends AbstractObserver {
     };
 
     this._points = [ ...this._points, newPoint ];
+    this._points.sort(sortByStartDate);
 
     this._notify(updateType, newPoint);
   }
 
   updatePoint(updateType, updatedPoint) {
     this._points = updateItem(this._points, updatedPoint);
+    this._points.sort(sortByStartDate);
 
     this._notify(updateType, updatedPoint);
   }
