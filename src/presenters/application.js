@@ -1,6 +1,6 @@
 import { render, rerender } from '../utils/render.js';
 import { FilterType, Place, Screen, UpdateType } from '../const.js';
-import { getTripPrice, getTripCities } from '../utils/point.js';
+import { getTripPrice, getTripCities, getTripDate } from '../utils/point.js';
 
 import PointsModel from '../models/points.js';
 import FilterModel from '../models/filter.js';
@@ -116,9 +116,11 @@ export default class ApplicationPresenter {
 
   _renderTripInfo() {
     const prevTripInfoView = this._tripInfoView;
+    const points = this._pointsModel.getAll();
     this._tripInfoView = new TripInfoView({
-      tripCities: getTripCities(this._pointsModel.getAll()),
-      price: getTripPrice(this._pointsModel.getAll()),
+      tripDate: getTripDate(points),
+      tripCities: getTripCities(points),
+      price: getTripPrice(points),
     });
     rerender(this._tripInfoView, prevTripInfoView, this._tripMainView);
   }

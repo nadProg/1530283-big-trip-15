@@ -28,3 +28,20 @@ export const isPointDuringToday = ({ start, end }) => {
 export const isStartInFuture = ({ start }) => dayjs(start).isAfter(dayjs());
 
 export const isEndInPast= ({ end }) => dayjs(end).isBefore(dayjs());
+
+export const formatTripDate = (date) => {
+  if (!date) {
+    return '';
+  }
+
+  let { start, end } = date;
+  start = dayjs(start).format('MMM DD');
+  end = dayjs(end).format('MMM DD');
+
+  const [ endMonth, endDay ] = end.split(' ');
+  if (start.startsWith(endMonth)) {
+    end = endDay;
+  }
+
+  return `${start}&nbsp;&mdash;&nbsp;${end}`;
+};

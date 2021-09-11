@@ -20,10 +20,21 @@ export const getTripPrice = (points) => points.reduce((tripPrice, point) => {
 
 export const getTripCities = (points) => points.map(({ destination }) => destination.name);
 
+export const getTripDate = (points) => {
+  if (!points.length) {
+    return null;
+  }
+
+  return {
+    start: points[0].date.start,
+    end: points[points.length - 1].date.end,
+  };
+};
+
 export const formatTripCities = (cities) => {
   if (cities.length > 3) {
     cities = [ cities[0], '...', cities[cities.length - 1]];
   }
 
-  return cities.join(' — ');
+  return cities.join('&nbsp;&mdash;&nbsp;');
 };
