@@ -136,3 +136,8 @@ export const StatiscticsType = {
   TIMES: 'times',
   TIME_SPEND: 'time-spend',
 };
+
+export const COMMON_DATEPICKER_OPTIONS = {
+  enableTime: true,
+  dateFormat: 'd/m/y H:i',
+};

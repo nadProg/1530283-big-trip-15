@@ -1,7 +1,10 @@
+import flatpickr from 'flatpickr';
+
+import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js';
+
 import SmartView from './smart.js';
 
-import { PointType, DEFAULT_POINT } from '../const.js';
-import { formatInputDate } from '../utils/date.js';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createEventTypeItemTemplate = (value) => {
   const text = value;
@@ -30,7 +33,7 @@ const createOfferTemplate = ({ title, price }, index, isChecked = false) => `
 const createDestinationPhoto = ({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`;
 
 const createEditPointTemplate = (point) => {
-  const { date, basePrice, offers: chosenOffers, type: chosenType, destination, availableOffers, availableDestinations, isNew } = point;
+  const { basePrice, offers: chosenOffers, type: chosenType, destination, availableOffers, availableDestinations, isNew } = point;
 
   const eventTypeItemsTemplate = Object.values(PointType)
     .map(createEventTypeItemTemplate)
@@ -81,11 +84,11 @@ const createEditPointTemplate = (point) => {
           </div>
 
           <div class="event__field-group  event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatInputDate(date.start)}">
+            <label class="visually-hidden" for="event-start-time">From</label>
+            <input class="event__input  event__input--time" id="event-start-time" type="text" name="event-start-time" value="">
             &mdash;
-            <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatInputDate(date.end)}">
+            <label class="visually-hidden" for="event-end-time">To</label>
+            <input class="event__input  event__input--time" id="event-end-time" type="text" name="event-end-time" value="">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -150,6 +153,11 @@ export default class EditPointView extends SmartView {
 
     this._offers = [ ...offers ];
 
+    this._datePickers = {
+      end: null,
+      start: null,
+    };
+
     this._resetButtonClickHandler = this._resetButtonClickHandler.bind(this);
     this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
@@ -157,6 +165,9 @@ export default class EditPointView extends SmartView {
     this._changeOffers = this._changeOffers.bind(this);
     this._changeType = this._changeType.bind(this);
     this._changeBasePrice = this._changeBasePrice.bind(this);
+
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._updateAvailableOffers(this._data.type);
     this.restoreHandlers();
@@ -198,6 +209,59 @@ export default class EditPointView extends SmartView {
 
     this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetButtonClickHandler);
+
+    this._setDatePicker();
+  }
+
+  _setDatePicker() {
+    if (this._datePickers.start) {
+      this._datePickers.start.destroy();
+    }
+
+    if (this._datePickers.end) {
+      this._datePickers.end.destroy();
+    }
+
+    const startDateElement = this.getElement().querySelector('#event-start-time');
+    const endDateElement = this.getElement().querySelector('#event-end-time');
+
+    this._datePickers.start = flatpickr(startDateElement, {
+      ...COMMON_DATEPICKER_OPTIONS,
+      defaultDate: this._data.date.start,
+      maxDate: this._data.date.end,
+      onChange: this._startDateChangeHandler,
+    });
+
+    this._datePickers.end = flatpickr(endDateElement, {
+      ...COMMON_DATEPICKER_OPTIONS,
+      defaultDate: this._data.date.end,
+      minDate: this._data.date.start,
+      onChange: this._endDateChangeHandler,
+    });
+  }
+
+  _startDateChangeHandler([ newDate ]) {
+    this.updateData({
+      date: {
+        start: newDate,
+        end: this._data.date.end,
+      },
+    }, {  isElementUpdate: false });
+
+    this._datePickers.start.toggle();
+    this._datePickers.end.set('minDate', newDate);
+  }
+
+  _endDateChangeHandler([ newDate ]) {
+    this.updateData({
+      date: {
+        end: newDate,
+        start: this._data.date.start,
+      },
+    }, {  isElementUpdate: false });
+
+    this._datePickers.end.toggle();
+    this._datePickers.start.set('maxDate', newDate);
   }
 
   _getData() {

@@ -34,8 +34,6 @@ export const formatDuration = (duration) => {
   return [days, hours, minutes].join(' ');
 };
 
-export const formatInputDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
-
 export const isPointDuringToday = ({ start, end }) => {
   const today = dayjs();
   end = dayjs(end);
