@@ -15,9 +15,9 @@ const findMaxEndDate = (points) => {
 
 export const sortByStartDate = (pointA, pointB) => pointA.date.start - pointB.date.start;
 
-export const sortByTime = (pointA, pointB) => (pointA.date.end - pointA.date.start) - (pointB.date.end - pointB.date.start);
+export const sortByTime = (pointA, pointB) => (pointB.date.end - pointB.date.start) - (pointA.date.end - pointA.date.start);
 
-export const sortByBasePrice = (pointA, pointB) => pointA.basePrice - pointB.basePrice;
+export const sortByBasePrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
 export const filter = {
   [FilterType.ALL]: (points) => [ ...points ],
