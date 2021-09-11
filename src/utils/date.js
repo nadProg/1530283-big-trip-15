@@ -24,11 +24,11 @@ export const formatDuration = (duration) => {
   const [days, hours, minutes] = duration.format('DD[D] HH[H] mm[M]').split(' ');
 
   if (days.startsWith('00')) {
-    return [hours, minutes].join(' ');
-  }
+    if (hours.startsWith('00')) {
+      return minutes;
+    }
 
-  if (hours.startsWith('00')) {
-    return minutes;
+    return [hours, minutes].join(' ');
   }
 
   return [days, hours, minutes].join(' ');

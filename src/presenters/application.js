@@ -175,7 +175,7 @@ export default class ApplicationPresenter {
   }
 
   _handleAddEventButtonClick() {
-    if (this._screen === Screen.TRIP) {
+    if (this._screen === Screen.TABLE) {
       console.log('click');
       this._tableSceenPresenter.addNewPoint();
       this._eventAddButtonView.toggleDisabled();
