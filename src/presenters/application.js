@@ -1,6 +1,6 @@
 import { Place, Screen, UpdateType } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
-import { getTripPrice, getTripCities, getTripDate } from '../utils/point.js';
+import { getTripPrice, getTripCities, getTripDate, getFilters } from '../utils/point.js';
 import { getStatisticsDatasets } from '../utils/statistics.js';
 
 import PointsModel from '../models/points.js';
@@ -38,7 +38,7 @@ export default class ApplicationPresenter {
     this._tripInfoView = null;
     this._tripControlsView = new TripControlsView();
     this._navigationView = null;
-    this._filtersView = new FiltersView();
+    this._filtersView = null;
     this._eventAddButtonView = new EventAddButtonView();
     this._mainView = new MainView();
     this._containerView = new ContainerView();
@@ -110,18 +110,28 @@ export default class ApplicationPresenter {
   }
 
   _renderTripControls() {
+    this._renderNavigation();
+    this._renderFilters();
+    render(this._tripMainView, this._tripControlsView);
+  }
+
+  _renderFilters() {
+    const prevFiltersView = this._filtersView;
+
+    const currentActiveFilter = this._filterModel.getFilter();
+    const currentFilters = getFilters(this._pointsModel.getAll());
+    console.log(currentFilters);
+    this._filtersView = new FiltersView(currentActiveFilter, currentFilters);
     this._filtersView.setChangeHandler(this._handleFilterChange);
 
-    render(this._tripMainView, this._tripControlsView);
-    this._renderNavigation();
-    render(this._tripControlsView, this._filtersView);
+    rerender(this._filtersView, prevFiltersView, this._tripControlsView);
   }
 
   _renderNavigation() {
     const prevNavigationView = this._navigationView;
     this._navigationView = new NavigationView(this._screen);
     this._navigationView.setClickHandler(this._handleNavigationClick);
-    rerender(this._navigationView, prevNavigationView, this._tripControlsView );
+    rerender(this._navigationView, prevNavigationView, this._tripControlsView);
   }
 
   _renderMain() {
@@ -187,8 +197,16 @@ export default class ApplicationPresenter {
   }
 
   _handlePointModelChange(updateType) {
-    if (updateType === UpdateType.MINOR || updateType === UpdateType.INIT) {
-      this._renderTripInfo();
+    switch (updateType) {
+      case UpdateType.INIT:
+      case UpdateType.MINOR:
+        this._renderFilters();
+        this._renderTripInfo();
+        break;
+
+      case UpdateType.MAJOR:
+        this._renderFilters();
+        break;
     }
   }
 

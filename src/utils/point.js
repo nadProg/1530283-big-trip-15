@@ -25,6 +25,12 @@ export const filter = {
   [FilterType.FUTURE]: (points) => points.filter(({ date }) => isPointDuringToday(date) || isStartInFuture(date)),
 };
 
+export const getFilters = (points) => Object.values(FilterType)
+  .map((type) => ({
+    type,
+    count: filter[type](points).length,
+  }));
+
 export const getTripPrice = (points) => points.reduce((tripPrice, point) => {
   const offersPrice = point.offers.reduce((price, offer) => price + offer.price, 0);
   return tripPrice + point.basePrice + offersPrice;
