@@ -56,6 +56,9 @@ export default class ApplicationPresenter {
     this._renderMain();
     this._renderHeader();
 
+    // Временная задержка загрузки
+    await new Promise((resolve) => setTimeout(() => resolve(), 1000));
+
     const [ points, offers, destinations ] = await Promise.all([
       this._api.getPoints(),
       this._api.getOffers(),
