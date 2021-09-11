@@ -159,8 +159,8 @@ export default class EditPointView extends SmartView {
       start: null,
     };
 
-    this._resetButtonClickHandler = this._resetButtonClickHandler.bind(this);
-    this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
+    this._resetHandler = this._resetHandler.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
     this._inputDestination = this._inputDestination.bind(this);
     this._changeOffers = this._changeOffers.bind(this);
@@ -193,14 +193,14 @@ export default class EditPointView extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
   }
 
-  setSubmitButtonClickHandler(callback) {
-    this._callback.submitButtonClick = callback;
-    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
+  setSubmitHandler(callback) {
+    this._callback.submit = callback;
+    this.getElement().addEventListener('submit', this._submitHandler);
   }
 
-  setResetButtonClickHandler(callback) {
-    this._callback.resetButtonClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetButtonClickHandler);
+  setResetHandler(callback) {
+    this._callback.reset = callback;
+    this.getElement().addEventListener('reset', this._resetHandler);
   }
 
   restoreHandlers() {
@@ -210,8 +210,8 @@ export default class EditPointView extends SmartView {
       this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
     }
 
-    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._submitButtonClickHandler);
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetButtonClickHandler);
+    this.getElement().addEventListener('submit', this._submitHandler);
+    this.getElement().addEventListener('reset', this._resetHandler);
 
     this._setDatePicker();
   }
@@ -297,16 +297,16 @@ export default class EditPointView extends SmartView {
     this._callback.rollupButtonClick();
   }
 
-  _submitButtonClickHandler(evt) {
+  _submitHandler(evt) {
     evt.preventDefault();
 
-    this._callback.submitButtonClick(this._getData());
+    this._callback.submit(this._getData());
   }
 
-  _resetButtonClickHandler(evt) {
+  _resetHandler(evt) {
     evt.preventDefault();
 
-    this._callback.resetButtonClick(this._data.id);
+    this._callback.reset(this._data.id);
   }
 
   _changeOffers(evt) {
@@ -346,7 +346,6 @@ export default class EditPointView extends SmartView {
     }
 
     input.setCustomValidity('Destination must be one of list values');
-    input.reportValidity();
   }
 
   _keyDownDestinationHandler(evt) {

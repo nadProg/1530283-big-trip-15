@@ -21,8 +21,8 @@ export default class PointPresenter {
     this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
-    this._handleResetButtonClick = this._handleResetButtonClick.bind(this);
-    this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
+    this._handleReset = this._handleReset.bind(this);
+    this._handleSubmit = this._handleSubmit.bind(this);
     this._handleFavoriteButtonClick = this._handleFavoriteButtonClick.bind(this);
   }
 
@@ -32,9 +32,9 @@ export default class PointPresenter {
 
     if (this._editMode) {
       this._currentView = new EditPointView(point, this._offers, this._destinations);
-      this._currentView.setResetButtonClickHandler(this._handleResetButtonClick);
+      this._currentView.setResetHandler(this._handleReset);
+      this._currentView.setSubmitHandler(this._handleSubmit);
       this._currentView.setCloseButtonClickHandler(this._handleCloseButtonClick);
-      this._currentView.setSubmitButtonClickHandler(this._handleSubmitButtonClick);
     } else {
       this._currentView = new PointView(point);
       this._currentView.setOpenButtonClickHandler(this._handleOpenButtonClick);
@@ -88,12 +88,12 @@ export default class PointPresenter {
     }
   }
 
-  _handleResetButtonClick(payload) {
+  _handleReset(payload) {
     console.log('Delete action', payload);
     this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
   }
 
-  _handleSubmitButtonClick(payload) {
+  _handleSubmit(payload) {
     console.log('Submit payload', payload);
     this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
   }

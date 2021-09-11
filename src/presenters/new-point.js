@@ -16,8 +16,8 @@ export default class NewPointPresenter {
 
     this._closeNewPoint= closeNewPoint;
     this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
-    this._handleResetButtonClick = this._handleResetButtonClick.bind(this);
-    this._handleSubmitButtonClick = this._handleSubmitButtonClick.bind(this);
+    this._handleReset = this._handleReset.bind(this);
+    this._handleSubmit = this._handleSubmit.bind(this);
     this._changePoint = handlePointViewAction;
   }
 
@@ -27,8 +27,8 @@ export default class NewPointPresenter {
     }
 
     this._newPointView = new EditPointView(null, this._offers, this._destinations);
-    this._newPointView.setResetButtonClickHandler(this._handleResetButtonClick);
-    this._newPointView.setSubmitButtonClickHandler(this._handleSubmitButtonClick);
+    this._newPointView.setResetHandler(this._handleReset);
+    this._newPointView.setSubmitHandler(this._handleSubmit);
 
     render(this._pointContainer, this._newPointView, Place.AFTER_BEGIN);
 
@@ -52,11 +52,11 @@ export default class NewPointPresenter {
     }
   }
 
-  _handleResetButtonClick() {
+  _handleReset() {
     this.destroy();
   }
 
-  _handleSubmitButtonClick(payload) {
+  _handleSubmit(payload) {
     console.log('Submit payload', payload);
     this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
   }
