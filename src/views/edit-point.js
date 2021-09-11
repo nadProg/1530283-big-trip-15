@@ -251,7 +251,7 @@ export default class EditPointView extends SmartView {
       },
     }, {  isElementUpdate: false });
 
-    this._datePickers.start.toggle();
+    // this._datePickers.start.toggle();
     this._datePickers.end.set('minDate', newDate);
   }
 
@@ -263,7 +263,7 @@ export default class EditPointView extends SmartView {
       },
     }, {  isElementUpdate: false });
 
-    this._datePickers.end.toggle();
+    // this._datePickers.end.toggle();
     this._datePickers.start.set('maxDate', newDate);
   }
 

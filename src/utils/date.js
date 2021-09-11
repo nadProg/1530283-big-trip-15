@@ -21,7 +21,10 @@ export const formatDuration = (duration) => {
     duration = dayjs.duration(duration);
   }
 
-  const [days, hours, minutes] = duration.format('DD[D] HH[H] mm[M]').split(' ');
+  let days = Math.floor(duration.asDays());
+  days = `${days < 10 ? `0${days}` : days}D`;
+
+  const [hours, minutes] = duration.format('HH[H] mm[M]').split(' ');
 
   if (days.startsWith('00')) {
     if (hours.startsWith('00')) {

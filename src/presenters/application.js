@@ -82,7 +82,7 @@ export default class ApplicationPresenter {
     this._screen = Screen.TABLE;
     this._eventAddButtonView.toggleDisabled();
 
-    this._pointsModel.setPoints(UpdateType.INIT, points.slice(0, 5));
+    this._pointsModel.setPoints(UpdateType.INIT, points.slice());
     this._offers = [ ...offers ],
     this._destinations = [ ...destinations ];
 
