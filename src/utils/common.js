@@ -19,3 +19,15 @@ export const updateItem = (items, updatedItem) => {
     ...items.slice(index + 1),
   ];
 };
+
+export const enableForm = (form) => {
+  Array.from(form.elements).forEach((element) => {
+    element.disabled = false;
+  });
+};
+
+export const disableForm = (form) => {
+  Array.from(form.elements).forEach((element) => {
+    element.disabled = true;
+  });
+};
