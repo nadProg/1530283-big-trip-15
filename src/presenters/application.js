@@ -18,6 +18,7 @@ import ContainerView from '../views/container.js';
 import StatisticsView from '../views/statistics.js';
 
 import TableScreenPresenter from './table-screen.js';
+import { getMoneyStatistics, getTypeStatistics, getStatistics } from '../utils/statistics.js';
 
 export default class ApplicationPresenter {
   constructor({ container, api }) {
@@ -149,6 +150,15 @@ export default class ApplicationPresenter {
       case Screen.STATISCTICS:
         this._tableSceenPresenter.destroy();
         this._renderStatistics();
+
+        console.log('Statistics');
+        console.log(getStatistics(this._pointsModel.getAll()));
+
+        // console.log('Type statistics');
+        // console.log(getTypeStatistics(this._pointsModel.getAll()));
+
+        // console.log('Time-spend statistics');
+        // console.log(getMoneyStatistics(this._pointsModel.getAll()));
         break;
     }
   }

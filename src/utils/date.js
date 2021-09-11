@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
+import durationPlugin from 'dayjs/plugin/duration';
 
-dayjs.extend(duration);
+dayjs.extend(durationPlugin);
 
 export const formdatEventDate = (date) => dayjs(date).format('MMM DD');
 
@@ -9,11 +9,32 @@ export const formatTime = (date) => dayjs(date).format('HH:mm');
 
 export const formatDateTime = (date, { isTime = true } = {}) => dayjs(date).format(`YYYY-MM-DD${isTime ? '[T]HH:mm' : ''}`);
 
-export const formatDuration = (startDate, endDate) => {
+// export const formatDuration = (startDate, endDate) => {
+//   startDate = dayjs(startDate);
+//   endDate = dayjs(endDate);
+
+//   const [days, hours, minutes] = dayjs.duration(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]').split(' ');
+
+//   if (days.startsWith('00')) {
+//     return [hours, minutes].join(' ');
+//   }
+
+//   if (hours.startsWith('00')) {
+//     return minutes;
+//   }
+
+//   return [days, hours, minutes].join(' ');
+// };
+
+export const getDuration = (startDate, endDate) => {
   startDate = dayjs(startDate);
   endDate = dayjs(endDate);
 
-  const [days, hours, minutes] = dayjs.duration(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]').split(' ');
+  return dayjs.duration(endDate.diff(startDate));
+};
+
+export const formatDuration = (duration) => {
+  const [days, hours, minutes] = duration.format('DD[D] HH[H] mm[M]').split(' ');
 
   if (days.startsWith('00')) {
     return [hours, minutes].join(' ');

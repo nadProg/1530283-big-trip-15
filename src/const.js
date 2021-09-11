@@ -10,31 +10,39 @@ export const Place = {
 
 export const STATISCTICS_CHART_TYPE = 'horizontalBar';
 
-export const STAISTICS_CHART_BAR_HEIGHT = 50;
+export const STATISTICS_CHART_BAR_HEIGHT = 55;
 
 export const STATISTICS_CHART_OPTIONS = {
   plugins: {
     datalabels: {
       font: {
-        size: 20,
+        size: 13,
       },
-      color: '#ffffff',
-      anchor: 'start',
+      color: '#000000',
+      anchor: 'end',
       align: 'start',
-      offset: 40,
+      formatter: (val) => `€ ${val}`,
     },
+  },
+  title: {
+    display: true,
+    text: 'MONEY',
+    fontColor: '#000000',
+    fontSize: 23,
+    position: 'left',
   },
   scales: {
     yAxes: [{
       ticks: {
-        fontColor: '#ffffff',
-        padding: 100,
-        fontSize: 20,
+        fontColor: '#000000',
+        padding: 5,
+        fontSize: 13,
       },
       gridLines: {
         display: false,
         drawBorder: false,
       },
+      barThickness: 44,
     }],
     xAxes: [{
       ticks: {
@@ -45,6 +53,7 @@ export const STATISTICS_CHART_OPTIONS = {
         display: false,
         drawBorder: false,
       },
+      minBarLength: 50,
     }],
   },
   legend: {

@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import { formdatEventDate, formatTime, formatDateTime, formatDuration } from '../utils/date.js';
+import { formdatEventDate, formatTime, formatDateTime, formatDuration, getDuration } from '../utils/date.js';
 
 const createOfferItemTemplate = ({ title, price }) => `
   <li class="event__offer">
@@ -26,7 +26,7 @@ const createPointTemplate = ({ date, basePrice, offers, type, destination, isFav
             &mdash;
             <time class="event__end-time" datetime="${formatDateTime(date.end)}">${formatTime(date.end)}</time>
           </p>
-          <p class="event__duration">${formatDuration(date.start, date.end)}</p>
+          <p class="event__duration">${formatDuration(getDuration(date.start, date.end))}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
