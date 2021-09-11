@@ -98,7 +98,7 @@ export const FilterType = {
 };
 
 export const Screen = {
-  TRIP: 'trip',
+  TABLE: 'table',
   STATISCTICS: 'statisctics',
 };
 

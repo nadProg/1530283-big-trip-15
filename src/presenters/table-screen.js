@@ -6,12 +6,12 @@ import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
 import TripEventsListView from '../views/trip-events-list.js';
 
-import PointPresenter from '../presenters/point.js';
-import NewPointPresenter from '../presenters/new-point.js';
+import PointPresenter from './point.js';
+import NewPointPresenter from './new-point.js';
 
-export default class TripScreenPresenter {
+export default class TableScreenPresenter {
   constructor({ container, pointsModel, filterModel, offers, destinations, resetAddNewPointMode }) {
-    this._tripScreenContainer = container;
+    this._tableScreenContainer = container;
 
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
@@ -53,10 +53,14 @@ export default class TripScreenPresenter {
 
   destroy() {
     this._closeAllEditPoints();
+
     remove(this._tripEventsView);
     this._tripEventsView = null;
-    // this._sortBarView = null;
-    // this._tripEventsListView = null;
+    this._sortBarView = null;
+    this._tripEventsListView = null;
+
+    this._filterModel.removeObserver(this._handleModelChange);
+    this._pointsModel.removeObserver(this._handleModelChange);
   }
 
   addNewPoint() {
@@ -125,7 +129,7 @@ export default class TripScreenPresenter {
     this._renderSortBar();
     this._renderPointList();
 
-    rerender(this._tripEventsView, prevTripEventsView, this._tripScreenContainer);
+    rerender(this._tripEventsView, prevTripEventsView, this._tableScreenContainer);
   }
 
   _closeAllEditPoints() {
