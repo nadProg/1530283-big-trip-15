@@ -1,6 +1,18 @@
 import { FilterType } from '../const';
 import { isPointDuringToday, isStartInFuture, isEndInPast } from './date';
 
+const findMaxEndDate = (points) => {
+  let maxDate = points[0].date.end;
+
+  points.forEach((point) => {
+    if (point.date.end > maxDate) {
+      maxDate = point.date.end;
+    }
+  });
+
+  return maxDate;
+};
+
 export const sortByStartDate = (pointA, pointB) => pointA.date.start - pointB.date.start;
 
 export const sortByTime = (pointA, pointB) => (pointA.date.end - pointA.date.start) - (pointB.date.end - pointB.date.start);
@@ -27,7 +39,7 @@ export const getTripDate = (points) => {
 
   return {
     start: points[0].date.start,
-    end: points[points.length - 1].date.end,
+    end: findMaxEndDate(points),
   };
 };
 
