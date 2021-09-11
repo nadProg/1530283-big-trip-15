@@ -1,5 +1,5 @@
 export const KeyCode = {
-  // ENTER: 'Enter',
+  ENTER: 'Enter',
   ESCAPE: 'Escape',
 };
 

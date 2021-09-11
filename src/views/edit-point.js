@@ -1,6 +1,7 @@
 import flatpickr from 'flatpickr';
 
 import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js';
+import { isEnter } from '../utils/common.js';
 
 import SmartView from './smart.js';
 
@@ -169,6 +170,8 @@ export default class EditPointView extends SmartView {
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
+    this._keyDownDestinationHandler = this._keyDownDestinationHandler.bind(this);
+
     this._updateAvailableOffers(this._data.type);
     this.restoreHandlers();
   }
@@ -286,6 +289,7 @@ export default class EditPointView extends SmartView {
 
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeType);
     this.getElement().querySelector('.event__input--destination').addEventListener('input', this._inputDestination);
+    this.getElement().querySelector('.event__input--destination').addEventListener('keydown', this._keyDownDestinationHandler);
     this.getElement().querySelector('.event__input--price').addEventListener('change', this._changeBasePrice);
   }
 
@@ -343,6 +347,12 @@ export default class EditPointView extends SmartView {
 
     input.setCustomValidity('Destination must be one of list values');
     input.reportValidity();
+  }
+
+  _keyDownDestinationHandler(evt) {
+    if (isEnter(evt)) {
+      evt.preventDefault();
+    }
   }
 
   _changeBasePrice(evt) {
