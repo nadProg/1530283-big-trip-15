@@ -1,4 +1,3 @@
-import { duration } from 'dayjs';
 import { StatiscticsType } from '../const';
 import { formatDuration, getDuration } from './date';
 
@@ -9,7 +8,7 @@ const getStatistics = (points) => {
     if (!statistics.has(type)) {
       statistics.set(type, {
         [StatiscticsType.MONEY]: 0,
-        [StatiscticsType.TIMES]: 0,
+        [StatiscticsType.TYPE]: 0,
         [StatiscticsType.TIME_SPEND]: getDuration(),
       });
     }
@@ -17,7 +16,7 @@ const getStatistics = (points) => {
     const currentStatistics = statistics.get(type);
 
     statistics.set(type, {
-      [StatiscticsType.TIMES]: currentStatistics[StatiscticsType.TIMES] + 1,
+      [StatiscticsType.TYPE]: currentStatistics[StatiscticsType.TYPE] + 1,
       [StatiscticsType.MONEY]: currentStatistics[StatiscticsType.MONEY] + basePrice,
       [StatiscticsType.TIME_SPEND]: currentStatistics[StatiscticsType.TIME_SPEND].add(getDuration(date.start, date.end)),
     });
@@ -65,6 +64,6 @@ export const getStatisticsDatasets = (points) => {
 
 export const formatter = {
   [StatiscticsType.MONEY]:  (value) => `€ ${value}`,
-  [StatiscticsType.TIMES]: (value) => value,
+  [StatiscticsType.TYPE]: (value) => `${value}x`,
   [StatiscticsType.TIME_SPEND]: (value) => formatDuration(value),
 };

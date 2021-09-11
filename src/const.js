@@ -134,7 +134,7 @@ export const UpdateType = {
 
 export const StatiscticsType = {
   MONEY: 'money',
-  TIMES: 'times',
+  TYPE: 'type',
   TIME_SPEND: 'time-spend',
 };
 
