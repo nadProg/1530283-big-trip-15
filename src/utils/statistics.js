@@ -1,6 +1,6 @@
 import { getDuration } from './date';
 
-export const getStatistics = (points) => {
+const getStatistics = (points) => {
   const statistics = new Map();
 
   points.forEach(({ type, basePrice, date }) => {
@@ -8,7 +8,7 @@ export const getStatistics = (points) => {
       statistics.set(type, {
         times: 0,
         timeSpend: getDuration(),
-        totalPrice: 0,
+        money: 0,
       });
     }
 
@@ -17,37 +17,49 @@ export const getStatistics = (points) => {
     statistics.set(type, {
       times: currentStatistics.times + 1,
       timeSpend: currentStatistics.timeSpend.add(getDuration(date.start, date.end)),
-      totalPrice: currentStatistics.totalPrice + basePrice,
+      money: currentStatistics.money + basePrice,
     });
   });
 
-  return statistics;
+  return Array.from(statistics.entries());
 };
 
-// export const getMoneyStatistics = (points) => {
-//   const statistics = new Map();
+const getDatasetFromStatistics = (statisctics, key) => {
+  statisctics = [ ...statisctics ];
 
-//   points.forEach(({ type, basePrice }) => {
-//     if (!statistics.has(type)) {
-//       statistics.set(type, 0);
-//     }
+  statisctics.sort(([, datumA], [, datumB]) => {
+    if (key === 'timeSpend') {
+      return datumB[key].$ms - datumA[key].$ms;
+    }
 
-//     statistics.set(type, statistics.get(type) + basePrice);
-//   });
+    return datumB[key] - datumA[key];
+  });
 
-//   return statistics.entries();
-// };
+  const dataset = {
+    labels: [],
+    data: [],
+  };
 
-// export const getTypeStatistics = (points) => {
-//   const statistics = new Map();
+  statisctics.forEach(([ label, datum ]) => {
+    dataset.data.push(datum[key]);
+    dataset.labels.push(label);
+  });
 
-//   points.forEach(({ type }) => {
-//     if (!statistics.has(type)) {
-//       statistics.set(type, 0);
-//     }
+  return dataset;
+};
 
-//     statistics.set(type, statistics.get(type) + 1);
-//   });
+export const getStatisticsDatasets = (points) => {
+  const statisctics = getStatistics(points);
 
-//   return statistics.entries();
-// };
+  console.log(statisctics);
+
+  console.log('Money');
+  console.log(getDatasetFromStatistics(statisctics, 'money'));
+
+  console.log('Type');
+  console.log(getDatasetFromStatistics(statisctics, 'times'));
+
+  console.log('TimeSpend');
+  console.log(getDatasetFromStatistics(statisctics, 'timeSpend'));
+
+};

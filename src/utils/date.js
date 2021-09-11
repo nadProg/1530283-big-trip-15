@@ -9,23 +9,6 @@ export const formatTime = (date) => dayjs(date).format('HH:mm');
 
 export const formatDateTime = (date, { isTime = true } = {}) => dayjs(date).format(`YYYY-MM-DD${isTime ? '[T]HH:mm' : ''}`);
 
-// export const formatDuration = (startDate, endDate) => {
-//   startDate = dayjs(startDate);
-//   endDate = dayjs(endDate);
-
-//   const [days, hours, minutes] = dayjs.duration(endDate.diff(startDate)).format('DD[D] HH[H] mm[M]').split(' ');
-
-//   if (days.startsWith('00')) {
-//     return [hours, minutes].join(' ');
-//   }
-
-//   if (hours.startsWith('00')) {
-//     return minutes;
-//   }
-
-//   return [days, hours, minutes].join(' ');
-// };
-
 export const getDuration = (startDate, endDate) => {
   startDate = dayjs(startDate);
   endDate = dayjs(endDate);

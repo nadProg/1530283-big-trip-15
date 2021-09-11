@@ -1,6 +1,7 @@
+import { Place, Screen, UpdateType } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
-import { FilterType, Place, Screen, UpdateType } from '../const.js';
 import { getTripPrice, getTripCities, getTripDate } from '../utils/point.js';
+import { getStatisticsDatasets } from '../utils/statistics.js';
 
 import PointsModel from '../models/points.js';
 import FilterModel from '../models/filter.js';
@@ -18,7 +19,6 @@ import ContainerView from '../views/container.js';
 import StatisticsView from '../views/statistics.js';
 
 import TableScreenPresenter from './table-screen.js';
-import { getMoneyStatistics, getTypeStatistics, getStatistics } from '../utils/statistics.js';
 
 export default class ApplicationPresenter {
   constructor({ container, api }) {
@@ -152,7 +152,7 @@ export default class ApplicationPresenter {
         this._renderStatistics();
 
         console.log('Statistics');
-        console.log(getStatistics(this._pointsModel.getAll()));
+        console.log(getStatisticsDatasets(this._pointsModel.getAll()));
 
         // console.log('Type statistics');
         // console.log(getTypeStatistics(this._pointsModel.getAll()));
