@@ -1,4 +1,4 @@
-import { Place, Screen, UpdateType } from '../const.js';
+import { Place, Screen, UpdateType, Message } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
 import { getTripPrice, getTripCities, getTripDate, getFilters } from '../utils/point.js';
 import { getStatisticsDatasets } from '../utils/statistics.js';
@@ -18,6 +18,9 @@ import MainView from '../views/main.js';
 import ContainerView from '../views/container.js';
 import StatisticsView from '../views/statistics.js';
 
+import TripEventsView from '../views/trip-events.js';
+import MessageView from '../views/message.js';
+
 import TableScreenPresenter from './table-screen.js';
 
 export default class ApplicationPresenter {
@@ -31,6 +34,7 @@ export default class ApplicationPresenter {
     this._destinations = [];
 
     this._screen = Screen.TABLE;
+    this._isLoading = true;
 
     this._headerView = new HeaderView();
     this._headerContainerView = new HeaderContainerView();
@@ -43,6 +47,8 @@ export default class ApplicationPresenter {
     this._mainView = new MainView();
     this._containerView = new ContainerView();
     this._statisticsView = null;
+
+    this._loadingScreenView = null;
 
     this._tableSceenPresenter = null;
 
@@ -60,9 +66,11 @@ export default class ApplicationPresenter {
   async init() {
     this._renderMain();
     this._renderHeader();
+    this._renderLoadingScreen();
+    this._eventAddButtonView.toggleDisabled();
 
     // Временная задержка загрузки
-    await new Promise((resolve) => setTimeout(() => resolve(), 1000));
+    await new Promise((resolve) => setTimeout(() => resolve(), 2000));
 
     const [ points, offers, destinations ] = await Promise.all([
       this._api.getPoints(),
@@ -70,18 +78,15 @@ export default class ApplicationPresenter {
       this._api.getDestinations(),
     ]);
 
-    this._pointsModel.setPoints(UpdateType.INIT, points.slice(0, 0));
+    this._isLoading = false;
+    this._screen = Screen.TABLE;
+    this._eventAddButtonView.toggleDisabled();
+
+    this._pointsModel.setPoints(UpdateType.INIT, points.slice(0, 5));
     this._offers = [ ...offers ],
     this._destinations = [ ...destinations ];
 
-    console.log('Points:');
-    console.log(this._pointsModel.getAll());
-
-    console.log('Offers:');
-    console.log(this._offers);
-
-    console.log('Destinations:');
-    console.log(this._destinations);
+    this.print();
 
     this._tableSceenPresenter = new TableScreenPresenter({
       offers: this._offers,
@@ -92,7 +97,9 @@ export default class ApplicationPresenter {
       resetAddNewPointMode: this._resetAddNewPointMode,
     });
 
-    this._renderScreen(Screen.TABLE);
+    this._removeLoadingScreen();
+    this._renderNavigation();
+    this._renderScreen();
   }
 
   _renderHeader() {
@@ -151,6 +158,10 @@ export default class ApplicationPresenter {
   }
 
   _renderScreen() {
+    if (this._isLoading) {
+      return;
+    }
+
     switch (this._screen) {
       case Screen.TABLE:
         this._removeStatistics();
@@ -178,6 +189,17 @@ export default class ApplicationPresenter {
     }
   }
 
+  _renderLoadingScreen() {
+    this._loadingScreenView = new TripEventsView();
+    render(this._loadingScreenView, new MessageView(Message.LOADING));
+    render(this._containerView, this._loadingScreenView);
+  }
+
+  _removeLoadingScreen() {
+    remove(this._loadingScreenView);
+    this._loadingScreenView = null;
+  }
+
   _handleFilterChange(filter) {
     if (this._filterModel.getFilter() !== filter) {
       this._filterModel.setFilter(UpdateType.MAJOR, filter);
@@ -185,6 +207,10 @@ export default class ApplicationPresenter {
   }
 
   _handleAddEventButtonClick() {
+    if (this._isLoading) {
+      return;
+    }
+
     if (this._screen === Screen.TABLE) {
       console.log('click');
       this._tableSceenPresenter.addNewPoint();
@@ -220,5 +246,16 @@ export default class ApplicationPresenter {
 
     this._renderNavigation();
     this._renderScreen();
+  }
+
+  print() {
+    console.log('Points:');
+    console.log(this._pointsModel.getAll());
+
+    console.log('Offers:');
+    console.log(this._offers);
+
+    console.log('Destinations:');
+    console.log(this._destinations);
   }
 }
