@@ -1,6 +1,7 @@
 import { remove, rerender, render } from '../utils/render.js';
 import { sortByBasePrice, sortByTime, filter } from '../utils/point.js';
-import { SortType, UpdateType, UserAction, filterTypeToMessage } from '../const.js';
+import { SortType, UpdateType, UserAction, filterTypeToMessage, Message } from '../const.js';
+import { alert } from '../utils/alert.js';
 
 import TripEventsView from '../views/trip-events.js';
 import SortBarView from '../views/sort-bar.js';
@@ -11,7 +12,7 @@ import PointPresenter from './point.js';
 import NewPointPresenter from './new-point.js';
 
 export default class TableScreenPresenter {
-  constructor({ container, pointsModel, filterModel, offers, destinations, resetAddNewPointMode, api }) {
+  constructor({ container, pointsModel, filterModel, offers = [], destinations = [], resetAddNewPointMode, api }) {
     this._api = api;
 
     this._tableScreenContainer = container;
@@ -65,10 +66,23 @@ export default class TableScreenPresenter {
     this._pointsModel.removeObserver(this._handleModelChange);
   }
 
-  addNewPoint() {
-    this._closeAllEditPoints();
+  setOffersAndDestinations(offers = [], destinations = []) {
+    this._offers = offers;
+    this._destinations = destinations;
 
-    console.log(this._pointPresenters.size);
+    this._pointPresenters.forEach((presenter) => {
+      presenter.setOffersAndDestinations(offers, destinations);
+    });
+  }
+
+  addNewPoint() {
+    if (!this._offers.length || !this._destinations.length) {
+      alert('No available data to create new points');
+      this._resetAddNewPointMode();
+      return;
+    }
+
+    this._closeAllEditPoints();
 
     if (!this._pointPresenters.size) {
       this._removeMessage();

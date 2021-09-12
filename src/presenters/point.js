@@ -55,6 +55,11 @@ export default class PointPresenter {
     this._editPointView = null;
   }
 
+  setOffersAndDestinations(offers = [], destinations = []) {
+    this._offers = offers;
+    this._destinations = destinations;
+  }
+
   setEditMode() {
     this._closeAllEditPoints();
 
@@ -76,6 +81,11 @@ export default class PointPresenter {
   _handleOpenButtonClick() {
     if (!isOnline()) {
       alert(Message.EDIT_IN_OFFLINE);
+      return;
+    }
+
+    if (!this._offers.length || !this._destinations.length) {
+      alert('No available data to edit points');
       return;
     }
 

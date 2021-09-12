@@ -32,8 +32,6 @@ export default class ApplicationPresenter {
 
     this._pointsModel = new PointsModel();
     this._filterModel = new FilterModel();
-    this._offers = [];
-    this._destinations = [];
 
     this._screen = Screen.TABLE;
     this._isLoading = true;
@@ -49,18 +47,16 @@ export default class ApplicationPresenter {
     this._mainView = new MainView();
     this._containerView = new ContainerView();
     this._statisticsView = null;
-
     this._loadingScreenView = null;
 
     this._tableSceenPresenter = null;
 
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
-    this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
-
     this._handleNavigationClick = this._handleNavigationClick.bind(this);
-
     this._handlePointModelChange = this._handlePointModelChange.bind(this);
+    this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
+    this._loadOffersAndDestinations = this._loadOffersAndDestinations.bind(this);
 
     this._pointsModel.addObserver(this._handlePointModelChange);
   }
@@ -72,38 +68,35 @@ export default class ApplicationPresenter {
     this._eventAddButtonView.toggleDisabled();
 
     try {
-      const [ points, offers, destinations ] = await Promise.all([
-        this._api.getPoints(),
-        this._api.getOffers(),
-        this._api.getDestinations(),
-      ]);
-
-      this._isLoading = false;
-      this._screen = Screen.TABLE;
-      this._eventAddButtonView.toggleDisabled();
-
+      const points = await this._api.getPoints();
       this._pointsModel.setPoints(UpdateType.INIT, points.slice());
-      this._offers = [ ...offers ],
-      this._destinations = [ ...destinations ];
-
-      this.print();
-
-      this._tableSceenPresenter = new TableScreenPresenter({
-        api: this._api,
-        offers: this._offers,
-        container: this._containerView,
-        pointsModel: this._pointsModel,
-        filterModel: this._filterModel,
-        destinations: this._destinations,
-        resetAddNewPointMode: this._resetAddNewPointMode,
-      });
-
-      this._removeLoadingScreen();
-      this._renderNavigation();
-      this._renderScreen();
     } catch (error) {
+      console.log(error);
       alert(error);
     }
+
+    this._isLoading = false;
+    this._screen = Screen.TABLE;
+    this._eventAddButtonView.toggleDisabled();
+
+    this.print();
+
+    this._tableSceenPresenter = new TableScreenPresenter({
+      api: this._api,
+      offers: this._offers,
+      container: this._containerView,
+      pointsModel: this._pointsModel,
+      filterModel: this._filterModel,
+      destinations: this._destinations,
+      resetAddNewPointMode: this._resetAddNewPointMode,
+    });
+
+    this._removeLoadingScreen();
+    this._renderNavigation();
+    this._renderScreen();
+
+    this._loadOffersAndDestinations();
+    window.addEventListener('online', this._loadOffersAndDestinations);
   }
 
   _renderHeader() {
@@ -255,6 +248,15 @@ export default class ApplicationPresenter {
 
     this._renderNavigation();
     this._renderScreen();
+  }
+
+  async _loadOffersAndDestinations() {
+    const [ offers, destinations ] = await Promise.all([
+      this._api.getOffers(),
+      this._api.getDestinations(),
+    ]);
+
+    this._tableSceenPresenter.setOffersAndDestinations(offers, destinations);
   }
 
   print() {

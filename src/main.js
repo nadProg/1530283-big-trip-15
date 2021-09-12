@@ -5,13 +5,15 @@ import { isOnline } from './utils/common.js';
 import ApplicationPresenter from './presenters/application.js';
 
 import API from './api/api.js';
+import Store from './api/store.js';
+import Provider from './api/provider';
 
-// Store
+const store = new Store('big-trip-v15', window.localStorage);
 const api = new API(END_POINT, AUTHORIZATION);
-// Provider
+const provider = new Provider(api, store);
 
 const applicationPresenter = new ApplicationPresenter({
-  api,
+  api: provider,
   container: document.body,
 });
 
