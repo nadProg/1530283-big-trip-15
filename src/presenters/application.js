@@ -89,6 +89,7 @@ export default class ApplicationPresenter {
     this.print();
 
     this._tableSceenPresenter = new TableScreenPresenter({
+      api: this._api,
       offers: this._offers,
       container: this._containerView,
       pointsModel: this._pointsModel,

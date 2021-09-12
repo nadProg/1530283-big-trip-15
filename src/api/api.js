@@ -39,51 +39,36 @@ export default class Api {
     return destinations;
   }
 
-  // async updateFilm(film) {
-  //   const response = await this._load({
-  //     url: `movies/${film.id}`,
-  //     method: APIMethod.PUT,
-  //     body: JSON.stringify(FilmsModel.adaptFilmToServer(film)),
-  //   });
+  async updatePoint(point) {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: APIMethod.PUT,
+      body: JSON.stringify(PointsModel.adaptPointToServer(point)),
+    });
 
-  //   const updatedFilm = await Api.toJSON(response);
+    const updatedPoint = await Api.toJSON(response);
 
-  //   return FilmsModel.adaptFilmToClient(updatedFilm);
-  // }
+    return PointsModel.adaptPointToClient(updatedPoint);
+  }
 
-  // async getComments(filmId) {
-  //   const response = await this._load({
-  //     url: `comments/${filmId}`,
-  //     method: APIMethod.GET,
-  //   });
+  async createPoint(point) {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: APIMethod.POST,
+      body: JSON.stringify(PointsModel.adaptPointToServer(point)),
+    });
 
-  //   const comments = await Api.toJSON(response);
+    const createdPoint = await Api.toJSON(response);
 
-  //   return comments.map(CommentsModel.adaptCommentToClient);
-  // }
+    return PointsModel.adaptPointToClient(createdPoint);
+  }
 
-
-  // async addComment({ filmId, newComment }) {
-  //   const response = await this._load({
-  //     url: `comments/${filmId}`,
-  //     method: APIMethod.POST,
-  //     body: JSON.stringify(CommentsModel.adaptNewCommentToServer(newComment)),
-  //   });
-
-  //   const { movie, comments } = await Api.toJSON(response);
-
-  //   return {
-  //     updatedFilm: FilmsModel.adaptFilmToClient(movie),
-  //     updatedComments: comments.map(CommentsModel.adaptCommentToClient),
-  //   };
-  // }
-
-  // async deleteComment(commentId) {
-  //   await this._load({
-  //     url: `comments/${commentId}`,
-  //     method: APIMethod.DELETE,
-  //   });
-  // }
+  async deletetePoint(pointId) {
+    await this._load({
+      url: `points/${pointId}`,
+      method: APIMethod.DELETE,
+    });
+  }
 
   // async sync(films) {
   //   const response = await this._load({

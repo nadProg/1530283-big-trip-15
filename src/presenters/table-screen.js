@@ -11,7 +11,9 @@ import PointPresenter from './point.js';
 import NewPointPresenter from './new-point.js';
 
 export default class TableScreenPresenter {
-  constructor({ container, pointsModel, filterModel, offers, destinations, resetAddNewPointMode }) {
+  constructor({ container, pointsModel, filterModel, offers, destinations, resetAddNewPointMode, api }) {
+    this._api = api;
+
     this._tableScreenContainer = container;
 
     this._filterModel = filterModel;
@@ -179,18 +181,20 @@ export default class TableScreenPresenter {
     this._renderTripEventsView();
   }
 
-  _handlePointViewAction(userAction, updateType, payload) {
+  async _handlePointViewAction(userAction, updateType, payload) {
     switch (userAction) {
       case UserAction.CREATE_POINT:
+        // API
         this._pointsModel.createPoint(updateType, payload);
         break;
 
       case UserAction.DELETE_POINT:
+        // API
         this._pointsModel.deletePoint(updateType, payload);
         break;
 
       case UserAction.UPDATE_POINT:
-        console.log('update!');
+        await this._api.updatePoint(payload);
         this._pointsModel.updatePoint(updateType, payload);
         break;
     }

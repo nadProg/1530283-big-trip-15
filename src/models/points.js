@@ -49,18 +49,33 @@ export default class PointsModel extends AbstractObserver {
   static adaptPointToClient(point) {
     const clientPoint = { ...point };
 
-    clientPoint.basePrice = point['base_price'];
     clientPoint.date = {
       end: new Date(point['date_to']),
       start: new Date(point['date_from']),
     };
+    clientPoint.basePrice = point['base_price'];
     clientPoint.isFavorite = point['is_favorite'];
 
-    delete clientPoint['base_price'];
     delete clientPoint['date_to'];
     delete clientPoint['date_from'];
+    delete clientPoint['base_price'];
     delete clientPoint['is_favorite'];
 
     return clientPoint;
+  }
+
+  static adaptPointToServer(point) {
+    const serverPoint = { ...point };
+
+    serverPoint['base_price'] = point.basePrice;
+    serverPoint['is_favorite'] = point.isFavorite;
+    serverPoint['date_to'] = point.date.end.toISOString();
+    serverPoint['date_from'] = point.date.start.toISOString();
+
+    delete serverPoint.date;
+    delete serverPoint.basePrice;
+    delete serverPoint.isFavorite;
+
+    return serverPoint;
   }
 }
