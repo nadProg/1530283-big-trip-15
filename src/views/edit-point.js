@@ -294,12 +294,11 @@ export default class EditPointView extends SmartView {
 
     this._disable();
     this._setSubmitStatus();
-    this._removeShakeEffect();
 
     try {
       await this._callback.submit(this._getData());
     } catch (error) {
-      this._addShakeEffect();
+      this._applyShakeEffect();
     }
 
     this._enable();
@@ -311,12 +310,11 @@ export default class EditPointView extends SmartView {
 
     this._disable();
     this._setResetStatus();
-    this._removeShakeEffect();
 
     try {
       await this._callback.reset(this._data.id);
     } catch (error) {
-      this._addShakeEffect();
+      this._applyShakeEffect();
     }
 
     this._enable();
@@ -385,12 +383,10 @@ export default class EditPointView extends SmartView {
     disableForm(this.getElement().querySelector('.event'));
   }
 
-  _addShakeEffect() {
-    this.getElement().classList.add('shake');
-  }
-
-  _removeShakeEffect() {
-    this.getElement().classList.remove('shake');
+  _applyShakeEffect() {
+    const element =  this.getElement();
+    element.classList.remove('shake');
+    setTimeout(() => element.classList.add('shake'));
   }
 
   _setSubmitStatus() {

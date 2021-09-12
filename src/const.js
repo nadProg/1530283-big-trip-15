@@ -149,6 +149,11 @@ export const Message = {
   CREATE_POINT: 'Click New Event to create your first point',
   NO_FUTURE_POINTS: 'There are no future events now',
   NO_PAST_POINTS: 'There are no past events now',
+  CREATE_IN_OFLLINE: 'You can\'t create new points in offline mode',
+  EDIT_IN_OFFLINE: 'You can\'t edit points in offline mode',
+  DELETE_IN_OFFLINE: 'You can\'t delete points in offline mode',
+  ONLINE: 'On-line mode',
+  OFFLINE: 'Off-line mode',
 };
 
 export const filterTypeToMessage = {
@@ -156,3 +161,5 @@ export const filterTypeToMessage = {
   future: Message.NO_FUTURE_POINTS,
   everything: Message.CREATE_POINT,
 };
+
+export const OFFLINE_POSTFIX = ' [offline]';

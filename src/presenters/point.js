@@ -1,9 +1,10 @@
-import { isEsc } from '../utils/common.js';
-import { render, rerender, remove } from '../utils/render.js';
+import { UserAction, UpdateType, Message } from '../const.js';
+import { isEsc, isOnline } from '../utils/common.js';
+import { rerender, remove } from '../utils/render.js';
+import { alert } from '../utils/alert.js';
 
 import PointView from '../views/point.js';
 import EditPointView from '../views/edit-point.js';
-import { UserAction, UpdateType } from '../const.js';
 
 export default class PointPresenter {
   constructor({ container, offers, destinations, closeAllEditPoints, handlePointViewAction }) {
@@ -73,6 +74,11 @@ export default class PointPresenter {
   }
 
   _handleOpenButtonClick() {
+    if (!isOnline()) {
+      alert(Message.EDIT_IN_OFFLINE);
+      return;
+    }
+
     this.setEditMode();
   }
 
@@ -90,11 +96,22 @@ export default class PointPresenter {
 
   async _handleReset(payload) {
     console.log('Delete action', payload);
+    if (!isOnline()) {
+      alert(Message.DELETE_IN_OFFLINE);
+      throw new Error(Message.OFFLINE);
+    }
+
     await this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
   }
 
   async _handleSubmit(payload) {
+    if (!isOnline()) {
+      alert(Message.EDIT);
+      throw new Error(Message.OFFLINE);
+    }
+
     console.log('Submit payload', payload);
+
     await this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
   }
 

@@ -2,6 +2,8 @@ import { Place, Screen, UpdateType, Message } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
 import { getTripPrice, getTripCities, getTripDate, getFilters } from '../utils/point.js';
 import { getStatisticsDatasets } from '../utils/statistics.js';
+import { isOnline } from '../utils/common.js';
+import { alert } from '../utils/alert.js';
 
 import PointsModel from '../models/points.js';
 import FilterModel from '../models/filter.js';
@@ -69,38 +71,39 @@ export default class ApplicationPresenter {
     this._renderLoadingScreen();
     this._eventAddButtonView.toggleDisabled();
 
-    // Временная задержка загрузки
-    await new Promise((resolve) => setTimeout(() => resolve(), 2000));
+    try {
+      const [ points, offers, destinations ] = await Promise.all([
+        this._api.getPoints(),
+        this._api.getOffers(),
+        this._api.getDestinations(),
+      ]);
 
-    const [ points, offers, destinations ] = await Promise.all([
-      this._api.getPoints(),
-      this._api.getOffers(),
-      this._api.getDestinations(),
-    ]);
+      this._isLoading = false;
+      this._screen = Screen.TABLE;
+      this._eventAddButtonView.toggleDisabled();
 
-    this._isLoading = false;
-    this._screen = Screen.TABLE;
-    this._eventAddButtonView.toggleDisabled();
+      this._pointsModel.setPoints(UpdateType.INIT, points.slice());
+      this._offers = [ ...offers ],
+      this._destinations = [ ...destinations ];
 
-    this._pointsModel.setPoints(UpdateType.INIT, points.slice());
-    this._offers = [ ...offers ],
-    this._destinations = [ ...destinations ];
+      this.print();
 
-    this.print();
+      this._tableSceenPresenter = new TableScreenPresenter({
+        api: this._api,
+        offers: this._offers,
+        container: this._containerView,
+        pointsModel: this._pointsModel,
+        filterModel: this._filterModel,
+        destinations: this._destinations,
+        resetAddNewPointMode: this._resetAddNewPointMode,
+      });
 
-    this._tableSceenPresenter = new TableScreenPresenter({
-      api: this._api,
-      offers: this._offers,
-      container: this._containerView,
-      pointsModel: this._pointsModel,
-      filterModel: this._filterModel,
-      destinations: this._destinations,
-      resetAddNewPointMode: this._resetAddNewPointMode,
-    });
-
-    this._removeLoadingScreen();
-    this._renderNavigation();
-    this._renderScreen();
+      this._removeLoadingScreen();
+      this._renderNavigation();
+      this._renderScreen();
+    } catch (error) {
+      alert(error);
+    }
   }
 
   _renderHeader() {
@@ -208,6 +211,11 @@ export default class ApplicationPresenter {
   }
 
   _handleAddEventButtonClick() {
+    if (!isOnline()) {
+      alert(Message.CREATE_IN_OFLLINE);
+      return;
+    }
+
     if (this._isLoading) {
       return;
     }

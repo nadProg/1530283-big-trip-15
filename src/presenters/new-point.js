@@ -1,6 +1,7 @@
-import { isEsc } from '../utils/common.js';
-import { Place, UserAction, UpdateType } from '../const.js';
-import { render, rerender, remove } from '../utils/render.js';
+import { isEsc, isOnline } from '../utils/common.js';
+import { Place, UserAction, UpdateType, Message } from '../const.js';
+import { render, remove } from '../utils/render.js';
+import { alert } from '../utils/alert.js';
 
 import EditPointView from '../views/edit-point.js';
 
@@ -57,7 +58,11 @@ export default class NewPointPresenter {
   }
 
   async _handleSubmit(payload) {
-    console.log('Submit payload', payload);
+    if (!isOnline()) {
+      alert(Message.CREATE_IN_OFLLINE);
+      throw new Error(Message.OFFLINE);
+    }
+
     await this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
   }
 }
