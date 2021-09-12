@@ -21,12 +21,14 @@ export const updateItem = (items, updatedItem) => {
 };
 
 export const enableForm = (form) => {
+  console.log(form);
   Array.from(form.elements).forEach((element) => {
     element.disabled = false;
   });
 };
 
 export const disableForm = (form) => {
+  console.log(form);
   Array.from(form.elements).forEach((element) => {
     element.disabled = true;
   });

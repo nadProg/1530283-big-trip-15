@@ -56,8 +56,8 @@ export default class NewPointPresenter {
     this.destroy();
   }
 
-  _handleSubmit(payload) {
+  async _handleSubmit(payload) {
     console.log('Submit payload', payload);
-    this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
+    await this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
   }
 }

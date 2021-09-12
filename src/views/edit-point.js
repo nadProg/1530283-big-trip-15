@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 
 import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js';
-import { isEnter } from '../utils/common.js';
+import { isEnter, enableForm, disableForm } from '../utils/common.js';
 
 import SmartView from './smart.js';
 
@@ -180,14 +180,6 @@ export default class EditPointView extends SmartView {
     return createEditPointTemplate(this._data);
   }
 
-  enable() {
-    // Enable form
-  }
-
-  disable() {
-    // Disable form
-  }
-
   setCloseButtonClickHandler(callback) {
     this._callback.rollupButtonClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
@@ -297,16 +289,38 @@ export default class EditPointView extends SmartView {
     this._callback.rollupButtonClick();
   }
 
-  _submitHandler(evt) {
+  async _submitHandler(evt) {
     evt.preventDefault();
 
-    this._callback.submit(this._getData());
+    this._disable();
+    this._setSubmitStatus();
+    this._removeShakeEffect();
+
+    try {
+      await this._callback.submit(this._getData());
+    } catch (error) {
+      this._addShakeEffect();
+    }
+
+    this._enable();
+    this._clearSubmitStatus();
   }
 
-  _resetHandler(evt) {
+  async _resetHandler(evt) {
     evt.preventDefault();
 
-    this._callback.reset(this._data.id);
+    this._disable();
+    this._setResetStatus();
+    this._removeShakeEffect();
+
+    try {
+      await this._callback.reset(this._data.id);
+    } catch (error) {
+      this._addShakeEffect();
+    }
+
+    this._enable();
+    this._clearResetStatus();
   }
 
   _changeOffers(evt) {
@@ -361,5 +375,41 @@ export default class EditPointView extends SmartView {
     {
       isElementUpdate: false,
     });
+  }
+
+  _enable() {
+    enableForm(this.getElement().querySelector('.event'));
+  }
+
+  _disable() {
+    disableForm(this.getElement().querySelector('.event'));
+  }
+
+  _addShakeEffect() {
+    this.getElement().classList.add('shake');
+  }
+
+  _removeShakeEffect() {
+    this.getElement().classList.remove('shake');
+  }
+
+  _setSubmitStatus() {
+    this.getElement().querySelector('.event__save-btn').textContent = 'Saving...';
+  }
+
+  _clearSubmitStatus() {
+    this.getElement().querySelector('.event__save-btn').textContent = 'Save';
+  }
+
+  _setResetStatus() {
+    if (!this._data.isNew) {
+      this.getElement().querySelector('.event__reset-btn').textContent = 'Deleting...';
+    }
+  }
+
+  _clearResetStatus() {
+    if (!this._data.isNew) {
+      this.getElement().querySelector('.event__reset-btn').textContent = 'Delete';
+    }
   }
 }

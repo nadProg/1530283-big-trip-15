@@ -88,14 +88,14 @@ export default class PointPresenter {
     }
   }
 
-  _handleReset(payload) {
+  async _handleReset(payload) {
     console.log('Delete action', payload);
-    this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
+    await this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
   }
 
-  _handleSubmit(payload) {
+  async _handleSubmit(payload) {
     console.log('Submit payload', payload);
-    this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
+    await this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
   }
 
   _handleFavoriteButtonClick() {
