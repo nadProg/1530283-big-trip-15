@@ -115,6 +115,8 @@ export const DEFAULT_POINT = {
     start: new Date(),
   },
   basePrice: 100,
+  destination: null,
+  destinationName: '',
   offers: [],
   isNew: true,
   isFavorite: false,

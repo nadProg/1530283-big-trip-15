@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 
 import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js';
-import { isEnter, enableForm, disableForm } from '../utils/common.js';
+import { isEnter, enableForm, disableForm, moveCursorToEnd } from '../utils/common.js';
 
 import SmartView from './smart.js';
 
@@ -36,6 +36,8 @@ const createDestinationPhoto = ({ src, description }) => `<img class="event__pho
 const createEditPointTemplate = (point) => {
   const { basePrice, offers: chosenOffers, type: chosenType, destination, availableOffers, availableDestinations, isNew } = point;
 
+  const destinationName = destination ? destination.name : point.destinationName;
+
   const eventTypeItemsTemplate = Object.values(PointType)
     .map(createEventTypeItemTemplate)
     .join('');
@@ -51,7 +53,7 @@ const createEditPointTemplate = (point) => {
     })
     .join('');
 
-  const destinationPhotosTemplate = destination.pictures.map(createDestinationPhoto).join('');
+  // const destinationPhotosTemplate = ;
 
   const resetButtonText = isNew ? 'Cancel' : 'Delete';
 
@@ -78,7 +80,7 @@ const createEditPointTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination">
               ${chosenType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destination.name}" list="destination-list">
+            <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destinationName}" list="destination-list" required>
             <datalist id="destination-list">
               ${destinatonOptionsTemplate}
             </datalist>
@@ -117,19 +119,22 @@ const createEditPointTemplate = (point) => {
             </section>
           ` : ''}
 
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
-            <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France,
-              ${destination.description}
-            </p>
-            ${ destination.pictures.length ? `
-              <div class="event__photos-container">
-                <div class="event__photos-tape">
-                  ${destinationPhotosTemplate}
+          ${destination ? `
+            <section class="event__section  event__section--destination">
+              <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
+              <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France,
+                ${destination.description}
+              </p>
+              ${ destination.pictures.length ? `
+                <div class="event__photos-container">
+                  <div class="event__photos-tape">
+                    ${destination.pictures.map(createDestinationPhoto).join('')}
+                  </div>
                 </div>
-              </div>
-            ` : ''}
-          </section>
+              ` : ''}
+            </section>
+          ` : ''}
+
         </section>
       </form>
     </li>
@@ -148,7 +153,6 @@ export default class EditPointView extends SmartView {
       {
         ...DEFAULT_POINT,
         type: offers[0].type,
-        destination: destinations[0],
         availableDestinations: [ ...destinations ],
       };
 
@@ -263,6 +267,7 @@ export default class EditPointView extends SmartView {
     const data = { ...this._data };
 
     delete data.isNew;
+    delete data.destinationName;
     delete data.availableOffers;
     delete data.availableDestinations;
 
@@ -349,15 +354,16 @@ export default class EditPointView extends SmartView {
   _inputDestination(evt) {
     const input = evt.target;
     const { value: destinationName } = input;
-    const destination = this._data.availableDestinations.find(({ name }) => name === destinationName);
+    const destination = this._data.availableDestinations.find(({ name }) => name.toLowerCase() === destinationName.toLowerCase());
 
-    if (destination) {
-      input.setCustomValidity('');
-      this.updateData({ destination });
-      return;
-    }
+    this.updateData({ destination, destinationName });
 
-    input.setCustomValidity('Destination must be one of list values');
+    const updatedInput = this.getElement().querySelector('.event__input--destination');
+    const validity = destination ? '' : 'Destination must be one of list values';
+
+    updatedInput.setCustomValidity(validity);
+    updatedInput.focus();
+    moveCursorToEnd(updatedInput);
   }
 
   _keyDownDestinationHandler(evt) {
