@@ -117,6 +117,7 @@ export const DEFAULT_POINT = {
   basePrice: 100,
   offers: [],
   isNew: true,
+  isFavorite: false,
 };
 
 export const UserAction = {

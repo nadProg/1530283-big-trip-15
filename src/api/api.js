@@ -53,7 +53,7 @@ export default class Api {
 
   async createPoint(point) {
     const response = await this._load({
-      url: `points/${point.id}`,
+      url: 'points',
       method: APIMethod.POST,
       body: JSON.stringify(PointsModel.adaptPointToServer(point)),
     });
@@ -63,7 +63,7 @@ export default class Api {
     return PointsModel.adaptPointToClient(createdPoint);
   }
 
-  async deletetePoint(pointId) {
+  async deletePoint(pointId) {
     await this._load({
       url: `points/${pointId}`,
       method: APIMethod.DELETE,

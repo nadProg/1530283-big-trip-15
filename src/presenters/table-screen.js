@@ -184,12 +184,12 @@ export default class TableScreenPresenter {
   async _handlePointViewAction(userAction, updateType, payload) {
     switch (userAction) {
       case UserAction.CREATE_POINT:
-        // API
+        await this._api.createPoint(payload);
         this._pointsModel.createPoint(updateType, payload);
         break;
 
       case UserAction.DELETE_POINT:
-        // API
+        await this._api.deletePoint(payload);
         this._pointsModel.deletePoint(updateType, payload);
         break;
 
