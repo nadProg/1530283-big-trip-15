@@ -1,63 +1,48 @@
 const PostFix = {
-  POINTS: 'Points',
-  OFFERS: 'Offers',
-  DESTINATIONS: 'Destinations',
-  // SYNC_REQUIRED: 'sync-required',
+  ITEM: 'items',
+  SYNC_REQUIRED: 'sync-required',
 };
 
 export default class Store {
   constructor(storeKey, storage) {
     this._storage = storage;
     this._storeKey = storeKey;
-  //   this._storeSyncKey = `${this._storeKey}-${PostFix.SYNC_REQUIRED}`;
+    this._storeItemsKey = `${this._storeKey}-${PostFix.ITEM}`;
+    this._storeSyncKey = `${this._storeKey}-${PostFix.SYNC_REQUIRED}`;
   }
 
   get _storePointsKey() {
-    return `${this._storeKey}-${PostFix.POINTS}`;
+    return `${this._storeKey}-${PostFix.ITEM}`;
   }
 
   get _storeOffersKey() {
     return `${this._storeKey}-${PostFix.OFFERS}`;
   }
 
-  get _storeDestinationsKey() {
-    return `${this._storeKey}-${PostFix.DESTINATIONS}`;
-  }
-
-  // get isSyncRequired() {
-  //   const isSyncRequired = this._storage.getItem(this._storeSyncKey);
-  //   return JSON.parse(isSyncRequired).isSyncRequired || false;
-  // }
-
-  // set isSyncRequired(required) {
-  //   const isSyncRequired = JSON.stringify({ isSyncRequired: required });
-  //   this._storage.setItem(this._storeSyncKey, isSyncRequired);
-  // }
-
-  getItems(postfix) {
+  getItems() {
     try {
-      return JSON.parse(this._storage.getItem(this[`_store${postfix}Key`])) || {};
+      return JSON.parse(this._storage.getItem(this._storeItemsKey)) || {};
     } catch (error) {
       return {};
     }
   }
 
-  setItems(items, postfix) {
+  setItems(items) {
     this._storage.setItem(
-      this[`_store${postfix}Key`],
+      this._storeItemsKey,
       JSON.stringify(items),
     );
   }
 
-  // setItem(key, value) {
-  //   const store = this.getItems();
+  setItem(key, value) {
+    const store = this.getItems();
 
-  //   this._storage.setItem(
-  //     this._storeItemsKey,
-  //     JSON.stringify({
-  //       ...store,
-  //       [key]: value,
-  //     }),
-  //   );
-  // }
+    this._storage.setItem(
+      this._storeItemsKey,
+      JSON.stringify({
+        ...store,
+        [key]: value,
+      }),
+    );
+  }
 }

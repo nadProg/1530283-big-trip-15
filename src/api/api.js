@@ -70,15 +70,15 @@ export default class Api {
     });
   }
 
-  // async sync(films) {
-  //   const response = await this._load({
-  //     url: '/movies/sync',
-  //     method: APIMethod.POST,
-  //     body: JSON.stringify(films),
-  //   });
+  async sync(points) {
+    const response = await this._load({
+      url: '/points/sync',
+      method: APIMethod.POST,
+      body: JSON.stringify(points),
+    });
 
-  //   return await Api.toJSON(response);
-  // }
+    return await Api.toJSON(response);
+  }
 
   async _load({
     url,

@@ -31,7 +31,7 @@ applicationPresenter.init();
 window.addEventListener('online', () => {
   document.title = document.title.replace(OFFLINE_POSTFIX, '');
   alert(Message.ONLINE, { type: AlertType.SUCCESS });
-  // provider.sync();
+  provider.sync();
 });
 
 window.addEventListener('offline', onWindowOffline);
