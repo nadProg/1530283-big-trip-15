@@ -20,7 +20,6 @@ const createTripInfoTemplate = ({ tripCities, price, tripDate }) => `
 export default class TripInfoView extends AbstractView {
   constructor(info) {
     super();
-    console.log(info);
     this._info = info;
   }
 

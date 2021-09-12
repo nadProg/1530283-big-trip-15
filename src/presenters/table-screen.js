@@ -219,7 +219,6 @@ export default class TableScreenPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         if (this._pointPresenters.has(payload.id)) {
-          console.log('!');
           this._pointPresenters.get(payload.id).init(payload);
         }
         break;

@@ -105,7 +105,6 @@ export default class PointPresenter {
   }
 
   async _handleReset(payload) {
-    console.log('Delete action', payload);
     if (!isOnline()) {
       alert(Message.DELETE_IN_OFFLINE);
       throw new Error(Message.OFFLINE);
@@ -119,8 +118,6 @@ export default class PointPresenter {
       alert(Message.EDIT);
       throw new Error(Message.OFFLINE);
     }
-
-    console.log('Submit payload', payload);
 
     await this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
   }

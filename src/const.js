@@ -21,7 +21,6 @@ export const STATISTICS_CHART_OPTIONS = {
       color: '#000000',
       anchor: 'end',
       align: 'start',
-      // formatter: (val) => `€ ${val}`,
     },
   },
   title: {

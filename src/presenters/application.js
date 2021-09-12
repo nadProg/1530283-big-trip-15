@@ -79,7 +79,8 @@ export default class ApplicationPresenter {
     this._screen = Screen.TABLE;
     this._eventAddButtonView.toggleDisabled();
 
-    this.print();
+    console.log('Points:');
+    console.log(this._pointsModel.getAll());
 
     this._tableSceenPresenter = new TableScreenPresenter({
       api: this._api,
@@ -124,7 +125,6 @@ export default class ApplicationPresenter {
 
     const currentActiveFilter = this._filterModel.getFilter();
     const currentFilters = getFilters(this._pointsModel.getAll());
-    console.log(currentFilters);
     this._filtersView = new FiltersView(currentActiveFilter, currentFilters);
     this._filtersView.setChangeHandler(this._handleFilterChange);
 
@@ -174,7 +174,6 @@ export default class ApplicationPresenter {
 
   _renderStatistics() {
     const statistics = getStatisticsDatasets(this._pointsModel.getAll());
-    console.log(statistics);
     this._statisticsView = new StatisticsView(statistics);
     render(this._containerView, this._statisticsView);
   }
@@ -214,7 +213,6 @@ export default class ApplicationPresenter {
     }
 
     if (this._screen === Screen.TABLE) {
-      console.log('click');
       this._tableSceenPresenter.addNewPoint();
       this._eventAddButtonView.toggleDisabled();
     }
@@ -239,7 +237,6 @@ export default class ApplicationPresenter {
   }
 
   _handleNavigationClick(screen) {
-    console.log(screen);
     if (this._screen === screen) {
       return;
     }
@@ -256,17 +253,12 @@ export default class ApplicationPresenter {
       this._api.getDestinations(),
     ]);
 
-    this._tableSceenPresenter.setOffersAndDestinations(offers, destinations);
-  }
-
-  print() {
-    console.log('Points:');
-    console.log(this._pointsModel.getAll());
-
     console.log('Offers:');
-    console.log(this._offers);
+    console.log(offers);
 
     console.log('Destinations:');
-    console.log(this._destinations);
+    console.log(destinations);
+
+    this._tableSceenPresenter.setOffersAndDestinations(offers, destinations);
   }
 }
