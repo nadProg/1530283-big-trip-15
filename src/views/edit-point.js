@@ -78,7 +78,7 @@ const createEditPointTemplate = (point) => {
             <label class="event__label  event__type-output" for="event-destination">
               ${chosenType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destinationName}" list="destination-list" required>
+            <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destinationName}" list="destination-list" required autocomplete="off">
             <datalist id="destination-list">
               ${destinatonOptionsTemplate}
             </datalist>
@@ -146,6 +146,7 @@ export default class EditPointView extends SmartView {
     this._data = point ?
       {
         ...point,
+        destinationName: point.destination.name,
         availableDestinations: [ ...destinations ],
       } :
       {
@@ -293,6 +294,16 @@ export default class EditPointView extends SmartView {
   async _submitHandler(evt) {
     evt.preventDefault();
 
+    const isDestinationValid = this._data.availableDestinations.some(({ name }) => name === this._data.destinationName);
+    const validity = isDestinationValid ? '' : 'Destination must be one of list values';
+
+    if (validity) {
+      const destinationInput = this.getElement().querySelector('.event__input--destination');
+      destinationInput.setCustomValidity(validity);
+      destinationInput.reportValidity();
+      return;
+    }
+
     this._disable();
     this._setSubmitStatus();
 
@@ -348,16 +359,16 @@ export default class EditPointView extends SmartView {
   }
 
   _inputDestination(evt) {
-    const input = evt.target;
-    const { value: destinationName } = input;
-    const destination = this._data.availableDestinations.find(({ name }) => name.toLowerCase() === destinationName.toLowerCase());
+    const { target: input } = evt;
+    const { value } = input;
+    const destinationName = value.length === 1 ? value.toUpperCase() : value;
+
+    const destination = this._data.availableDestinations.find(({ name }) => name === destinationName);
 
     this.updateData({ destination, destinationName });
 
     const updatedInput = this.getElement().querySelector('.event__input--destination');
-    const validity = destination ? '' : 'Destination must be one of list values';
 
-    updatedInput.setCustomValidity(validity);
     updatedInput.focus();
     moveCursorToEnd(updatedInput);
   }

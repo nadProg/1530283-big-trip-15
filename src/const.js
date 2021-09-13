@@ -61,9 +61,9 @@ export const STATISTICS_CHART_OPTIONS = {
   },
 };
 
-export const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+export const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
-export const AUTHORIZATION = 'Basic Rj6gkb1dsf53b53b';
+export const AUTHORIZATION = 'Basic 5Rj6gkb1dsf53b53b';
 
 export const APIMethod = {
   GET: 'GET',

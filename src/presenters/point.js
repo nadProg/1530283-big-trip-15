@@ -115,7 +115,7 @@ export default class PointPresenter {
 
   async _handleSubmit(payload) {
     if (!isOnline()) {
-      alert(Message.EDIT);
+      alert(Message.EDIT_IN_OFFLINE);
       throw new Error(Message.OFFLINE);
     }
 

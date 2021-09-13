@@ -96,8 +96,11 @@ export default class ApplicationPresenter {
     this._renderNavigation();
     this._renderScreen();
 
-    this._loadOffersAndDestinations();
     window.addEventListener('online', this._loadOffersAndDestinations);
+
+    if (isOnline()) {
+      this._loadOffersAndDestinations();
+    }
   }
 
   _renderHeader() {
