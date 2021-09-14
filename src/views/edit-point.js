@@ -360,17 +360,18 @@ export default class EditPointView extends SmartView {
 
   _inputDestination(evt) {
     const { target: input } = evt;
-    const { value } = input;
-    const destinationName = value.length === 1 ? value.toUpperCase() : value;
+    const { value: destinationName } = input;
 
     const destination = this._data.availableDestinations.find(({ name }) => name === destinationName);
+    const isElementUpdate = !!this._data.destination || !!destination;
 
-    this.updateData({ destination, destinationName });
+    this.updateData({ destination, destinationName }, { isElementUpdate });
 
-    const updatedInput = this.getElement().querySelector('.event__input--destination');
-
-    updatedInput.focus();
-    moveCursorToEnd(updatedInput);
+    if (isElementUpdate) {
+      const updatedInput = this.getElement().querySelector('.event__input--destination');
+      moveCursorToEnd(updatedInput);
+      updatedInput.focus();
+    }
   }
 
   _keyDownDestinationHandler(evt) {
