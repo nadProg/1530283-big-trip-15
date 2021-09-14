@@ -22,11 +22,6 @@ export default class PointsModel extends AbstractObserver {
   }
 
   createPoint(updateType, newPoint) {
-    newPoint = {
-      ...newPoint,
-      id: this.getAll().length + 1,
-    };
-
     this._points = [ ...this._points, newPoint ];
     this._points.sort(sortByStartDate);
 

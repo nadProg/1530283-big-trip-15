@@ -196,10 +196,12 @@ export default class TableScreenPresenter {
   }
 
   async _handlePointViewAction(userAction, updateType, payload) {
+    let updatedPayload = null;
+
     switch (userAction) {
       case UserAction.CREATE_POINT:
-        await this._api.createPoint(payload);
-        this._pointsModel.createPoint(updateType, payload);
+        updatedPayload = await this._api.createPoint(payload);
+        this._pointsModel.createPoint(updateType, updatedPayload);
         break;
 
       case UserAction.DELETE_POINT:
@@ -208,8 +210,8 @@ export default class TableScreenPresenter {
         break;
 
       case UserAction.UPDATE_POINT:
-        await this._api.updatePoint(payload);
-        this._pointsModel.updatePoint(updateType, payload);
+        updatedPayload = await this._api.updatePoint(payload);
+        this._pointsModel.updatePoint(updateType, updatedPayload);
         break;
     }
 
