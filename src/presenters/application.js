@@ -1,8 +1,8 @@
 import { Place, Screen, UpdateType, Message } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
+import { isOnline } from '../utils/common.js';
 import { getTripPrice, getTripCities, getTripDate, getFilters } from '../utils/point.js';
 import { getStatisticsDatasets } from '../utils/statistics.js';
-import { isOnline } from '../utils/common.js';
 import { alert } from '../utils/alert.js';
 
 import PointsModel from '../models/points.js';
@@ -19,7 +19,6 @@ import EventAddButtonView from '../views/event-add-button.js';
 import MainView from '../views/main.js';
 import ContainerView from '../views/container.js';
 import StatisticsView from '../views/statistics.js';
-
 import TripEventsView from '../views/trip-events.js';
 import MessageView from '../views/message.js';
 
@@ -51,11 +50,12 @@ export default class ApplicationPresenter {
 
     this._tableSceenPresenter = null;
 
+    this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
+
     this._handleFilterChange = this._handleFilterChange.bind(this);
-    this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
     this._handleNavigationClick = this._handleNavigationClick.bind(this);
     this._handlePointModelChange = this._handlePointModelChange.bind(this);
-    this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
+    this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
     this._loadOffersAndDestinations = this._loadOffersAndDestinations.bind(this);
 
     this._pointsModel.addObserver(this._handlePointModelChange);
@@ -105,41 +105,29 @@ export default class ApplicationPresenter {
     this._renderTripMain();
   }
 
+  _renderMain() {
+    render(this._applicationContainer, this._mainView, Place.AFTER_BEGIN);
+    render(this._mainView, this._containerView);
+  }
+
   _renderTripMain() {
     render(this._headerContainerView, this._tripMainView);
     this._renderTripInfo();
     this._renderTripControls();
-    render(this._tripMainView, this._eventAddButtonView);
+
     this._eventAddButtonView.setClickHandler(this._handleAddEventButtonClick);
+    render(this._tripMainView, this._eventAddButtonView);
   }
 
-  _renderTripControls() {
-    this._renderNavigation();
-    this._renderFilters();
-    render(this._tripMainView, this._tripControlsView);
+  _renderLoadingScreen() {
+    this._loadingScreenView = new TripEventsView();
+    render(this._loadingScreenView, new MessageView(Message.LOADING));
+    render(this._containerView, this._loadingScreenView);
   }
 
-  _renderFilters() {
-    const prevFiltersView = this._filtersView;
-
-    const currentActiveFilter = this._filterModel.getFilter();
-    const currentFilters = getFilters(this._pointsModel.getAll());
-    this._filtersView = new FiltersView(currentActiveFilter, currentFilters);
-    this._filtersView.setChangeHandler(this._handleFilterChange);
-
-    rerender(this._filtersView, prevFiltersView, this._tripControlsView);
-  }
-
-  _renderNavigation() {
-    const prevNavigationView = this._navigationView;
-    this._navigationView = new NavigationView(this._screen);
-    this._navigationView.setClickHandler(this._handleNavigationClick);
-    rerender(this._navigationView, prevNavigationView, this._tripControlsView);
-  }
-
-  _renderMain() {
-    render(this._applicationContainer, this._mainView, Place.AFTER_BEGIN);
-    render(this._mainView, this._containerView);
+  _removeLoadingScreen() {
+    remove(this._loadingScreenView);
+    this._loadingScreenView = null;
   }
 
   _renderTripInfo() {
@@ -151,6 +139,30 @@ export default class ApplicationPresenter {
       price: getTripPrice(points),
     });
     rerender(this._tripInfoView, prevTripInfoView, this._tripMainView);
+  }
+
+  _renderTripControls() {
+    this._renderNavigation();
+    this._renderFilters();
+    render(this._tripMainView, this._tripControlsView);
+  }
+
+  _renderNavigation() {
+    const prevNavigationView = this._navigationView;
+    this._navigationView = new NavigationView(this._screen);
+    this._navigationView.setClickHandler(this._handleNavigationClick);
+    rerender(this._navigationView, prevNavigationView, this._tripControlsView);
+  }
+
+  _renderFilters() {
+    const prevFiltersView = this._filtersView;
+
+    const currentActiveFilter = this._filterModel.getFilter();
+    const currentFilters = getFilters(this._pointsModel.getAll());
+    this._filtersView = new FiltersView(currentActiveFilter, currentFilters);
+    this._filtersView.setChangeHandler(this._handleFilterChange);
+
+    rerender(this._filtersView, prevFiltersView, this._tripControlsView);
   }
 
   _renderScreen() {
@@ -184,15 +196,15 @@ export default class ApplicationPresenter {
     }
   }
 
-  _renderLoadingScreen() {
-    this._loadingScreenView = new TripEventsView();
-    render(this._loadingScreenView, new MessageView(Message.LOADING));
-    render(this._containerView, this._loadingScreenView);
-  }
+  _handleNavigationClick(screen) {
+    if (this._screen === screen) {
+      return;
+    }
 
-  _removeLoadingScreen() {
-    remove(this._loadingScreenView);
-    this._loadingScreenView = null;
+    this._screen = screen;
+
+    this._renderNavigation();
+    this._renderScreen();
   }
 
   _handleFilterChange(filter) {
@@ -217,10 +229,6 @@ export default class ApplicationPresenter {
     }
   }
 
-  _resetAddNewPointMode() {
-    this._eventAddButtonView.toggleDisabled();
-  }
-
   _handlePointModelChange(updateType) {
     switch (updateType) {
       case UpdateType.INIT:
@@ -235,15 +243,8 @@ export default class ApplicationPresenter {
     }
   }
 
-  _handleNavigationClick(screen) {
-    if (this._screen === screen) {
-      return;
-    }
-
-    this._screen = screen;
-
-    this._renderNavigation();
-    this._renderScreen();
+  _resetAddNewPointMode() {
+    this._eventAddButtonView.toggleDisabled();
   }
 
   async _loadOffersAndDestinations() {
