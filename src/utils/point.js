@@ -1,5 +1,5 @@
-import { FilterType } from '../const';
-import { isPointDuringToday, isStartInFuture, isEndInPast } from './date';
+import { FilterType } from '../const.js';
+import { isPointDuringToday, isStartInFuture, isEndInPast } from './date.js';
 
 const findMaxEndDate = (points) => {
   let maxDate = points[0].date.end;
@@ -19,7 +19,7 @@ export const sortByTime = (pointA, pointB) => (pointB.date.end - pointB.date.sta
 
 export const sortByBasePrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
-export const filter = {
+export const filterPoints = {
   [FilterType.ALL]: (points) => [ ...points ],
   [FilterType.PAST]: (points) => points.filter(({ date }) => isPointDuringToday(date) || isEndInPast(date)),
   [FilterType.FUTURE]: (points) => points.filter(({ date }) => isPointDuringToday(date) || isStartInFuture(date)),
@@ -28,7 +28,7 @@ export const filter = {
 export const getFilters = (points) => Object.values(FilterType)
   .map((type) => ({
     type,
-    count: filter[type](points).length,
+    count: filterPoints[type](points).length,
   }));
 
 export const getTripPrice = (points) => points.reduce((tripPrice, point) => {

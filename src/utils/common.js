@@ -35,7 +35,10 @@ export const disableForm = (form) => {
 export const moveCursorToEnd = (element) => {
   if (typeof element.selectionStart === 'number') {
     element.selectionStart = element.selectionEnd = element.value.length;
-  } else if (typeof element.createTextRange !== 'undefined') {
+    return;
+  }
+
+  if (typeof element.createTextRange !== 'undefined') {
     element.focus();
     const range = element.createTextRange();
     range.collapse(false);

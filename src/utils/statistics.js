@@ -1,5 +1,5 @@
-import { StatiscticsType } from '../const';
-import { formatDuration, getDuration } from './date';
+import { StatiscticsType } from '../const.js';
+import { formatDuration, getDuration } from './date.js';
 
 const getStatistics = (points) => {
   const statistics = new Map();

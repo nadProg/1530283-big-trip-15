@@ -1,5 +1,5 @@
 import { remove, rerender, render } from '../utils/render.js';
-import { sortByBasePrice, sortByTime, filter } from '../utils/point.js';
+import { sortByBasePrice, sortByTime, filterPoints } from '../utils/point.js';
 import { SortType, UpdateType, UserAction, filterTypeToMessage, Message } from '../const.js';
 import { alert } from '../utils/alert.js';
 
@@ -153,7 +153,7 @@ export default class TableScreenPresenter {
 
     this._tripEventsView = new TripEventsView();
 
-    const points = filter[this._filterModel.getFilter()](this._pointsModel.getAll());
+    const points = filterPoints[this._filterModel.getFilter()](this._pointsModel.getAll());
 
     if (points.length) {
       this._renderSortBar();
