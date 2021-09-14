@@ -71,16 +71,12 @@ export default class ApplicationPresenter {
       const points = await this._api.getPoints();
       this._pointsModel.setPoints(UpdateType.INIT, points.slice());
     } catch (error) {
-      console.log(error);
-      alert(error);
+      alert(error.message);
     }
 
     this._isLoading = false;
     this._screen = Screen.TABLE;
     this._eventAddButtonView.toggleDisabled();
-
-    console.log('Points:');
-    console.log(this._pointsModel.getAll());
 
     this._tableSceenPresenter = new TableScreenPresenter({
       api: this._api,
@@ -251,17 +247,15 @@ export default class ApplicationPresenter {
   }
 
   async _loadOffersAndDestinations() {
-    const [ offers, destinations ] = await Promise.all([
-      this._api.getOffers(),
-      this._api.getDestinations(),
-    ]);
+    try {
+      const [ offers, destinations ] = await Promise.all([
+        this._api.getOffers(),
+        this._api.getDestinations(),
+      ]);
 
-    console.log('Offers:');
-    console.log(offers);
-
-    console.log('Destinations:');
-    console.log(destinations);
-
-    this._tableSceenPresenter.setOffersAndDestinations(offers, destinations);
+      this._tableSceenPresenter.setOffersAndDestinations(offers, destinations);
+    } catch (error) {
+      alert(error.message);
+    }
   }
 }
