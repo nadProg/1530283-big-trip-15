@@ -163,13 +163,13 @@ export default class EditPointView extends SmartView {
       start: null,
     };
 
+    this._changeTypeHandler = this._changeTypeHandler.bind(this);
+    this._changeOffersHandler = this._changeOffersHandler.bind(this);
+    this._changeBasePriceHandler = this._changeBasePriceHandler.bind(this);
     this._resetHandler = this._resetHandler.bind(this);
     this._submitHandler = this._submitHandler.bind(this);
-    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
-    this._inputDestination = this._inputDestination.bind(this);
-    this._changeOffers = this._changeOffers.bind(this);
-    this._changeType = this._changeType.bind(this);
-    this._changeBasePrice = this._changeBasePrice.bind(this);
+    this._inputDestinationHandler = this._inputDestinationHandler.bind(this);
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
 
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
@@ -185,8 +185,12 @@ export default class EditPointView extends SmartView {
   }
 
   setCloseButtonClickHandler(callback) {
-    this._callback.rollupButtonClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+    if (this._data.isNew) {
+      throw new Error('No close button in create point form');
+    }
+
+    this._callback.closeButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 
   setSubmitHandler(callback) {
@@ -203,62 +207,11 @@ export default class EditPointView extends SmartView {
     this._setInnerHandlers();
 
     if (!this._data.isNew) {
-      this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+      this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
     }
 
     this.getElement().addEventListener('submit', this._submitHandler);
     this.getElement().addEventListener('reset', this._resetHandler);
-
-    this._setDatePicker();
-  }
-
-  _setDatePicker() {
-    if (this._datePickers.start) {
-      this._datePickers.start.destroy();
-    }
-
-    if (this._datePickers.end) {
-      this._datePickers.end.destroy();
-    }
-
-    const startDateElement = this.getElement().querySelector('#event-start-time');
-    const endDateElement = this.getElement().querySelector('#event-end-time');
-
-    this._datePickers.start = flatpickr(startDateElement, {
-      ...COMMON_DATEPICKER_OPTIONS,
-      defaultDate: this._data.date.start,
-      maxDate: this._data.date.end,
-      onChange: this._startDateChangeHandler,
-    });
-
-    this._datePickers.end = flatpickr(endDateElement, {
-      ...COMMON_DATEPICKER_OPTIONS,
-      defaultDate: this._data.date.end,
-      minDate: this._data.date.start,
-      onChange: this._endDateChangeHandler,
-    });
-  }
-
-  _startDateChangeHandler([ newDate ]) {
-    this.updateData({
-      date: {
-        start: newDate,
-        end: this._data.date.end,
-      },
-    }, {  isElementUpdate: false });
-
-    this._datePickers.end.set('minDate', newDate);
-  }
-
-  _endDateChangeHandler([ newDate ]) {
-    this.updateData({
-      date: {
-        end: newDate,
-        start: this._data.date.start,
-      },
-    }, {  isElementUpdate: false });
-
-    this._datePickers.start.set('maxDate', newDate);
   }
 
   _getData() {
@@ -279,29 +232,72 @@ export default class EditPointView extends SmartView {
 
   _setInnerHandlers() {
     if (this._data.availableOffers.length) {
-      this.getElement().querySelector('.event__available-offers').addEventListener('change', this._changeOffers);
+      this.getElement().querySelector('.event__available-offers').addEventListener('change', this._changeOffersHandler);
     }
 
-    this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeType);
-    this.getElement().querySelector('.event__input--destination').addEventListener('input', this._inputDestination);
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._changeTypeHandler);
+    this.getElement().querySelector('.event__input--price').addEventListener('change', this._changeBasePriceHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('input', this._inputDestinationHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('keydown', this._keyDownDestinationHandler);
-    this.getElement().querySelector('.event__input--price').addEventListener('change', this._changeBasePrice);
+
+    this._setDatePicker();
   }
 
-  _rollupButtonClickHandler() {
-    this._callback.rollupButtonClick();
+  _setDatePicker() {
+    if (this._datePickers.start) {
+      this._datePickers.start.destroy();
+    }
+
+    if (this._datePickers.end) {
+      this._datePickers.end.destroy();
+    }
+
+    const endDateElement = this.getElement().querySelector('#event-end-time');
+    const startDateElement = this.getElement().querySelector('#event-start-time');
+
+    this._datePickers.start = flatpickr(startDateElement, {
+      ...COMMON_DATEPICKER_OPTIONS,
+      maxDate: this._data.date.end,
+      defaultDate: this._data.date.start,
+      onChange: this._startDateChangeHandler,
+    });
+
+    this._datePickers.end = flatpickr(endDateElement, {
+      ...COMMON_DATEPICKER_OPTIONS,
+      minDate: this._data.date.start,
+      defaultDate: this._data.date.end,
+      onChange: this._endDateChangeHandler,
+    });
+  }
+
+  _startDateChangeHandler([ newDate ]) {
+    const date = {
+      start: newDate,
+      end: this._data.date.end,
+    };
+
+    this.updateData({ date }, { isElementUpdate: false });
+    this._datePickers.end.set('minDate', newDate);
+  }
+
+  _endDateChangeHandler([ newDate ]) {
+    const date = {
+      end: newDate,
+      start: this._data.date.start,
+    };
+
+    this.updateData({ date }, { isElementUpdate: false });
+    this._datePickers.start.set('maxDate', newDate);
+  }
+
+  _closeButtonClickHandler() {
+    this._callback.closeButtonClick();
   }
 
   async _submitHandler(evt) {
     evt.preventDefault();
 
-    const isDestinationValid = this._data.availableDestinations.some(({ name }) => name === this._data.destinationName);
-    const validity = isDestinationValid ? '' : 'Destination must be one of list values';
-
-    if (validity) {
-      const destinationInput = this.getElement().querySelector('.event__input--destination');
-      destinationInput.setCustomValidity(validity);
-      destinationInput.reportValidity();
+    if (this._isDestinationInvalid()) {
       return;
     }
 
@@ -334,7 +330,7 @@ export default class EditPointView extends SmartView {
     this._clearResetStatus();
   }
 
-  _changeOffers(evt) {
+  _changeOffersHandler(evt) {
     const { checked, value } = evt.target;
     let offers = [ ...this._data.offers ];
 
@@ -350,7 +346,7 @@ export default class EditPointView extends SmartView {
     this.updateData({ offers }, { isElementUpdate: false });
   }
 
-  _changeType(evt) {
+  _changeTypeHandler(evt) {
     const { value: type } = evt.target;
     this._updateAvailableOffers(type);
     this.updateData({
@@ -359,7 +355,7 @@ export default class EditPointView extends SmartView {
     });
   }
 
-  _inputDestination(evt) {
+  _inputDestinationHandler(evt) {
     const { target: input } = evt;
     const { value: destinationName } = input;
 
@@ -381,13 +377,9 @@ export default class EditPointView extends SmartView {
     }
   }
 
-  _changeBasePrice(evt) {
-    this.updateData({
-      basePrice: Number(evt.target.value),
-    },
-    {
-      isElementUpdate: false,
-    });
+  _changeBasePriceHandler(evt) {
+    const basePrice = Number(evt.target.value);
+    this.updateData({ basePrice }, { isElementUpdate: false });
   }
 
   _enable() {
@@ -396,6 +388,22 @@ export default class EditPointView extends SmartView {
 
   _disable() {
     disableForm(this.getElement().querySelector('.event'));
+  }
+
+  _isDestinationInvalid() {
+    const isDestinationValid = this._data.availableDestinations
+      .some(({ name }) => name === this._data.destinationName);
+
+    const invalidMessage = isDestinationValid ? '' : 'Destination must be one of list values';
+
+    if (invalidMessage) {
+      const destinationInput = this.getElement().querySelector('.event__input--destination');
+      destinationInput.setCustomValidity(invalidMessage);
+      destinationInput.reportValidity();
+      return true;
+    }
+
+    return false;
   }
 
   _applyShakeEffect() {
