@@ -9,18 +9,17 @@ export default class NewPointPresenter {
   constructor({ container, offers, destinations, closeNewPoint, handlePointViewAction, api }) {
     this._api = api;
     this._pointContainer = container;
-    this._editMode = false;
-
     this._offers = [ ...offers ];
     this._destinations = [ ...destinations ];
+    this._closeNewPoint= closeNewPoint;
+    this._changePoint = handlePointViewAction;
 
+    this._editMode = false;
     this._newPointView = null;
 
-    this._closeNewPoint= closeNewPoint;
-    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
     this._handleReset = this._handleReset.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
-    this._changePoint = handlePointViewAction;
+    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
   }
 
   init() {
