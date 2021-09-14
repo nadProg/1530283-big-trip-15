@@ -41,20 +41,13 @@ export default class Provider {
   }
 
   async deletePoint(pointId) {
-    try {
-
-
-      if (isOnline()) {
-        await this._api.deletePoint(pointId);
-        this._store.removeItem(pointId);
-        return;
-      }
-
-      return Promise.reject(new Error('Delete point failed'));
-
-    } catch (error) {
-      console.log(error);
+    if (isOnline()) {
+      await this._api.deletePoint(pointId);
+      this._store.removeItem(pointId);
+      return;
     }
+
+    return Promise.reject(new Error('Delete point failed'));
   }
 
   async createPoint(point) {
