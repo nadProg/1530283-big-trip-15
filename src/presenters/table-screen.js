@@ -14,33 +14,29 @@ import NewPointPresenter from './new-point.js';
 export default class TableScreenPresenter {
   constructor({ container, pointsModel, filterModel, offers = [], destinations = [], resetAddNewPointMode, api }) {
     this._api = api;
-
     this._tableScreenContainer = container;
-
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
     this._offers = [ ...offers ];
     this._destinations = [ ...destinations ];
+    this._resetAddNewPointMode = resetAddNewPointMode;
 
     this._sortType = SortType.DAY;
 
-    this._tripEventsView = null;
-    this._sortBarView = null;
-    this._tripEventsListView = null;
     this._messageView = null;
+    this._sortBarView = null;
+    this._tripEventsView = null;
+    this._tripEventsListView = null;
 
     this._pointPresenters = new Map();
     this._newPointPresenter = null;
 
-    this._resetAddNewPointMode = resetAddNewPointMode;
-
-    this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
-    this._handleSortBarChange = this._handleSortBarChange.bind(this);
-    this._handleModelChange = this._handleModelChange.bind(this);
-
-    this._handlePointViewAction = this._handlePointViewAction.bind(this);
-
     this._closeNewPoint = this._closeNewPoint.bind(this);
+    this._closeAllEditPoints = this._closeAllEditPoints.bind(this);
+
+    this._handleModelChange = this._handleModelChange.bind(this);
+    this._handleSortBarChange = this._handleSortBarChange.bind(this);
+    this._handlePointViewAction = this._handlePointViewAction.bind(this);
   }
 
   get addNewPointMode() {
@@ -177,16 +173,6 @@ export default class TableScreenPresenter {
     this._messageView = null;
   }
 
-  _closeAllEditPoints() {
-    for (const pointPresenter of this._pointPresenters.values()) {
-      pointPresenter.setViewMode();
-    }
-
-    if (this._newPointPresenter) {
-      this._newPointPresenter.destroy();
-    }
-  }
-
   _handleSortBarChange(sortType) {
     if (this._sortType === sortType) {
       return;
@@ -238,6 +224,16 @@ export default class TableScreenPresenter {
 
     if (!this._pointPresenters.size) {
       this._renderMessage();
+    }
+  }
+
+  _closeAllEditPoints() {
+    for (const pointPresenter of this._pointPresenters.values()) {
+      pointPresenter.setViewMode();
+    }
+
+    if (this._newPointPresenter) {
+      this._newPointPresenter.destroy();
     }
   }
 }
