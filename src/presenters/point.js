@@ -10,21 +10,20 @@ export default class PointPresenter {
   constructor({ container, offers, destinations, closeAllEditPoints, handlePointViewAction, api }) {
     this._api = api;
     this._pointContainer = container;
-    this._editMode = false;
-
     this._offers = [ ...offers ];
     this._destinations = [ ...destinations ];
-
-    this._currentView = null;
-
     this._changePoint = handlePointViewAction;
     this._closeAllEditPoints = closeAllEditPoints;
 
-    this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
-    this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
+    this._point = null;
+    this._editMode = false;
+    this._currentView = null;
+
     this._handleReset = this._handleReset.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
+    this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
+    this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleFavoriteButtonClick = this._handleFavoriteButtonClick.bind(this);
   }
 
@@ -105,14 +104,14 @@ export default class PointPresenter {
     }
   }
 
-  async _handleReset(payload) {
-    if (!isOnline()) {
-      alert(Message.DELETE_IN_OFFLINE);
-      throw new Error(Message.OFFLINE);
-    }
+  async _handleFavoriteButtonClick() {
+    const updatedPoint = {
+      ...this._point,
+      isFavorite: !this._point.isFavorite,
+    };
 
-    await this._api.deletePoint(payload);
-    await this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
+    const updatedPayload = await this._api.updatePoint(updatedPoint);
+    this._changePoint(UserAction.UPDATE_POINT, UpdateType.PATCH, updatedPayload);
   }
 
   async _handleSubmit(payload) {
@@ -125,12 +124,13 @@ export default class PointPresenter {
     await this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, updatedPayload);
   }
 
-  _handleFavoriteButtonClick() {
-    const updatedPoint = {
-      ...this._point,
-      isFavorite: !this._point.isFavorite,
-    };
+  async _handleReset(payload) {
+    if (!isOnline()) {
+      alert(Message.DELETE_IN_OFFLINE);
+      throw new Error(Message.OFFLINE);
+    }
 
-    this._changePoint(UserAction.UPDATE_POINT, UpdateType.PATCH, updatedPoint);
+    await this._api.deletePoint(payload);
+    await this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
   }
 }
