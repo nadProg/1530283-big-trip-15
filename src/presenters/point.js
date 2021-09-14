@@ -7,7 +7,8 @@ import PointView from '../views/point.js';
 import EditPointView from '../views/edit-point.js';
 
 export default class PointPresenter {
-  constructor({ container, offers, destinations, closeAllEditPoints, handlePointViewAction }) {
+  constructor({ container, offers, destinations, closeAllEditPoints, handlePointViewAction, api }) {
+    this._api = api;
     this._pointContainer = container;
     this._editMode = false;
 
@@ -110,6 +111,7 @@ export default class PointPresenter {
       throw new Error(Message.OFFLINE);
     }
 
+    await this._api.deletePoint(payload);
     await this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
   }
 
@@ -119,7 +121,8 @@ export default class PointPresenter {
       throw new Error(Message.OFFLINE);
     }
 
-    await this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, payload);
+    const updatedPayload = await this._api.updatePoint(payload);
+    await this._changePoint(UserAction.UPDATE_POINT, UpdateType.MINOR, updatedPayload);
   }
 
   _handleFavoriteButtonClick() {

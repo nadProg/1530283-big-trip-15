@@ -6,7 +6,8 @@ import { alert } from '../utils/alert.js';
 import EditPointView from '../views/edit-point.js';
 
 export default class NewPointPresenter {
-  constructor({ container, offers, destinations, closeNewPoint, handlePointViewAction }) {
+  constructor({ container, offers, destinations, closeNewPoint, handlePointViewAction, api }) {
+    this._api = api;
     this._pointContainer = container;
     this._editMode = false;
 
@@ -63,6 +64,7 @@ export default class NewPointPresenter {
       throw new Error(Message.OFFLINE);
     }
 
-    await this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, payload);
+    const updatedPayload = await this._api.createPoint(payload);
+    await this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, updatedPayload);
   }
 }

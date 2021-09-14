@@ -91,6 +91,7 @@ export default class TableScreenPresenter {
     }
 
     this._newPointPresenter  = new NewPointPresenter({
+      api: this._api,
       container: this._tripEventsListView,
       offers: this._offers,
       destinations: this._destinations,
@@ -124,6 +125,7 @@ export default class TableScreenPresenter {
 
     points.forEach((point) => {
       const pointPresenter = new PointPresenter({
+        api: this._api,
         offers: this._offers,
         destinations: this._destinations,
         container: this._tripEventsListView,
@@ -196,25 +198,19 @@ export default class TableScreenPresenter {
   }
 
   async _handlePointViewAction(userAction, updateType, payload) {
-    let updatedPayload = null;
-
     switch (userAction) {
       case UserAction.CREATE_POINT:
-        updatedPayload = await this._api.createPoint(payload);
-        this._pointsModel.createPoint(updateType, updatedPayload);
+        this._pointsModel.createPoint(updateType, payload);
         break;
 
       case UserAction.DELETE_POINT:
-        await this._api.deletePoint(payload);
         this._pointsModel.deletePoint(updateType, payload);
         break;
 
       case UserAction.UPDATE_POINT:
-        updatedPayload = await this._api.updatePoint(payload);
-        this._pointsModel.updatePoint(updateType, updatedPayload);
+        this._pointsModel.updatePoint(updateType, payload);
         break;
     }
-
   }
 
   _handleModelChange(updateType, payload) {
