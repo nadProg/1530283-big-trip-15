@@ -1,4 +1,4 @@
-import { Place, Screen, UpdateType, Message } from '../const.js';
+import { Place, Screen, UpdateType, Message, FilterType } from '../const.js';
 import { render, rerender, remove } from '../utils/render.js';
 import { isOnline } from '../utils/common.js';
 import { getTripPrice, getTripCities, getTripDate, getFilters } from '../utils/point.js';
@@ -69,7 +69,7 @@ export default class ApplicationPresenter {
 
     try {
       const points = await this._api.getPoints();
-      this._pointsModel.setPoints(UpdateType.INIT, points.slice());
+      this._pointsModel.setPoints(UpdateType.INIT, points.slice(0, 1));
     } catch (error) {
       alert(error.message);
     }
@@ -224,6 +224,8 @@ export default class ApplicationPresenter {
     }
 
     if (this._screen === Screen.TABLE) {
+      this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+      this._renderFilters();
       this._tableSceenPresenter.addNewPoint();
       this._eventAddButtonView.toggleDisabled();
     }

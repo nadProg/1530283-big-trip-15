@@ -78,9 +78,7 @@ export default class TableScreenPresenter {
       return;
     }
 
-    this._closeAllEditPoints();
-
-    if (!this._pointPresenters.size) {
+    if (this._messageView) {
       this._removeMessage();
       this._tripEventsListView = new TripEventsListView();
       render(this._tripEventsView, this._tripEventsListView);
@@ -107,8 +105,6 @@ export default class TableScreenPresenter {
 
   _renderPointList(points) {
     this._tripEventsListView = new TripEventsListView();
-
-    this._pointPresenters.clear();
 
     switch (this._sortType) {
       case SortType.TIME:
@@ -141,25 +137,26 @@ export default class TableScreenPresenter {
   }
 
   _renderTripEventsView() {
-    const prevTripEventsView = this._tripEventsView;
-
-    if (this._messageView) {
-      this._removeMessage();
+    if (this._tripEventsView) {
+      remove(this._tripEventsView);
     }
 
     this._tripEventsView = new TripEventsView();
 
     const points = filterPoints[this._filterModel.getFilter()](this._pointsModel.getAll());
 
+    this._pointPresenters.clear();
+
     if (points.length) {
+      this._tripEventsListView = new TripEventsListView();
       this._renderSortBar();
+      render(this._tripEventsView, this._tripEventsListView);
       this._renderPointList(points);
     } else {
-      this._pointPresenters.clear();
       this._renderMessage();
     }
 
-    rerender(this._tripEventsView, prevTripEventsView, this._tableScreenContainer);
+    render(this._tableScreenContainer, this._tripEventsView);
   }
 
   _renderMessage() {
