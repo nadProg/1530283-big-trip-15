@@ -7,7 +7,6 @@ const createTripInfoTemplate = ({ tripCities, price, tripDate }) => `
   <section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${formatTripCities(tripCities)}</h1>
-
       <p class="trip-info__dates">${formatTripDate(tripDate)}</p>
     </div>
 
@@ -20,6 +19,7 @@ const createTripInfoTemplate = ({ tripCities, price, tripDate }) => `
 export default class TripInfoView extends AbstractView {
   constructor(info) {
     super();
+
     this._info = info;
   }
 

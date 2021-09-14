@@ -1,5 +1,9 @@
+import {
+  formdatEventDate, formatTime,
+  formatDateTime, formatDuration, getDuration
+} from '../utils/date.js';
+
 import AbstractView from './abstract.js';
-import { formdatEventDate, formatTime, formatDateTime, formatDuration, getDuration } from '../utils/date.js';
 
 const createOfferItemTemplate = ({ title, price }) => `
   <li class="event__offer">
@@ -59,7 +63,7 @@ export default class PointView extends AbstractView {
 
     this._point = { ...point };
 
-    this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
+    this._openButtonClickHandler = this._openButtonClickHandler.bind(this);
     this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
   }
 
@@ -68,8 +72,8 @@ export default class PointView extends AbstractView {
   }
 
   setOpenButtonClickHandler(callback) {
-    this._callback.rollupButtonClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollupButtonClickHandler);
+    this._callback.openButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._openButtonClickHandler);
   }
 
   setFavoriteButtonClickHandler(callback) {
@@ -77,8 +81,8 @@ export default class PointView extends AbstractView {
     this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteButtonClickHandler);
   }
 
-  _rollupButtonClickHandler() {
-    this._callback.rollupButtonClick();
+  _openButtonClickHandler() {
+    this._callback.openButtonClick();
   }
 
   _favoriteButtonClickHandler() {

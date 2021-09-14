@@ -10,6 +10,7 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 const createEventTypeItemTemplate = (value) => {
   const text = value;
   value = text.toLowerCase();
+
   return `
     <div class="event__type-item">
       <input id="event-type-${value}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${value}">

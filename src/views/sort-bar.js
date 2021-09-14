@@ -1,4 +1,5 @@
 import { SortType } from '../const.js';
+
 import AbstractView from './abstract.js';
 
 const createSortItemTemplate = (sortType, isChecked) => {

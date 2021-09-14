@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { formatter } from '../utils/statistics.js';
 
+import { formatter } from '../utils/statistics.js';
 import {
   STATISTICS_CHART_BAR_HEIGHT, STATISCTICS_CHART_TYPE, STATISTICS_CHART_OPTIONS
 } from '../const.js';
@@ -37,7 +37,6 @@ export default class StatisticsView extends AbstractView {
   getTemplate() {
     setTimeout(() => this._renderCharts());
     return createStatisticsTemplate(this._statistics);
-
   }
 
   _renderCharts() {

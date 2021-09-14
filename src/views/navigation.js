@@ -3,7 +3,11 @@ import { Screen } from '../const.js';
 import AbstractView from './abstract.js';
 
 const createNavigationItemTemplate = (item, isActive) => `
-  <a class="trip-tabs__btn  ${isActive ? 'trip-tabs__btn--active' : ''}" href="#${item}" data-screen="${item}">${item.toUpperCase()}</a>
+  <a
+    class="trip-tabs__btn  ${isActive ? 'trip-tabs__btn--active' : ''}"
+    href="#${item}"
+    data-screen="${item}"
+  >${item.toUpperCase()}</a>
 `;
 
 const createNavigationTemplate = (activeItem) => {
