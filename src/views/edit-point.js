@@ -402,10 +402,9 @@ export default class EditPointView extends SmartView {
       const destinationInput = this.getElement().querySelector('.event__input--destination');
       destinationInput.setCustomValidity(invalidMessage);
       destinationInput.reportValidity();
-      return true;
     }
 
-    return false;
+    return !!invalidMessage;
   }
 
   _applyShakeEffect() {
