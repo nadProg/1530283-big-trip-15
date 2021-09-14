@@ -77,7 +77,7 @@ export default class TableScreenPresenter {
 
   addNewPoint() {
     if (!this._offers.length || !this._destinations.length) {
-      alert('No available data to create new points');
+      alert(Message.NO_DATA_TO_CREATE);
       this._resetAddNewPointMode();
       return;
     }

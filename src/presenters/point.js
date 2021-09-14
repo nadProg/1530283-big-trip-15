@@ -86,7 +86,7 @@ export default class PointPresenter {
     }
 
     if (!this._offers.length || !this._destinations.length) {
-      alert('No available data to edit points');
+      alert(Message.NO_DATA_TO_EDIT);
       return;
     }
 

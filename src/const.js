@@ -155,6 +155,8 @@ export const Message = {
   DELETE_IN_OFFLINE: 'You can\'t delete points in offline mode',
   ONLINE: 'On-line mode',
   OFFLINE: 'Off-line mode',
+  NO_DATA_TO_CREATE: 'No available data to create new points',
+  NO_DATA_TO_EDIT: 'No available data to edit points',
 };
 
 export const filterTypeToMessage = {
