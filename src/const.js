@@ -84,12 +84,7 @@ export const UpdateType = {
   MAJOR: 'major',
 };
 
-// Change default start and end date
 export const DEFAULT_POINT = {
-  date: {
-    end: new Date(Date.now() + 1000 * 60 * 60 * 24),
-    start: new Date(),
-  },
   basePrice: 100,
   destination: null,
   destinationName: '',

@@ -2,6 +2,7 @@ import flatpickr from 'flatpickr';
 
 import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js';
 import { isEnter, enableForm, disableForm, moveCursorToEnd } from '../utils/common.js';
+import { getDefaultDate } from '../utils/date.js';
 
 import SmartView from './smart.js';
 
@@ -153,6 +154,7 @@ export default class EditPointView extends SmartView {
       {
         ...DEFAULT_POINT,
         type: offers[0].type,
+        date: getDefaultDate(),
         availableDestinations: [ ...destinations ],
       };
 
