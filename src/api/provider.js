@@ -41,16 +41,27 @@ export default class Provider {
   }
 
   async deletePoint(pointId) {
-    if (isOnline()) {
-      return await this._api.deletePoint(pointId);
-    }
+    try {
 
-    return Promise.reject(new Error('Delete point failed'));
+
+      if (isOnline()) {
+        await this._api.deletePoint(pointId);
+        this._store.removeItem(pointId);
+        return;
+      }
+
+      return Promise.reject(new Error('Delete point failed'));
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async createPoint(point) {
     if (isOnline()) {
-      return await this._api.createPoint(point);
+      const createdPoint = await this._api.createPoint(point);
+      this._store.setItem(createdPoint.id, PointsModel.adaptPointToServer(createdPoint));
+      return createdPoint;
     }
 
     return Promise.reject(new Error('Create point failed'));
