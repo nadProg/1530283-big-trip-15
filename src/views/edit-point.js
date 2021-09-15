@@ -220,6 +220,16 @@ export default class EditPointView extends SmartView {
     this.getElement().addEventListener('reset', this._resetHandler);
   }
 
+  destroyDatePickers() {
+    if (this._datePickers.start) {
+      this._datePickers.start.destroy();
+    }
+
+    if (this._datePickers.end) {
+      this._datePickers.end.destroy();
+    }
+  }
+
   _getData() {
     const data = { ...this._data };
 

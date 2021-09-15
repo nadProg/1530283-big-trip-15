@@ -37,6 +37,7 @@ export default class NewPointPresenter {
   }
 
   destroy() {
+    this._newPointView.destroyDatePickers();
     remove(this._newPointView);
     this._newPointView = null;
 
