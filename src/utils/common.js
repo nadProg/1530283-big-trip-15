@@ -38,7 +38,7 @@ export const moveCursorToEnd = (element) => {
     return;
   }
 
-  if (typeof element.createTextRange !== 'undefined') {
+  if (element.createTextRange) {
     element.focus();
     const range = element.createTextRange();
     range.collapse(false);

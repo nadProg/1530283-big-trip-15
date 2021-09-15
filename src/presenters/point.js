@@ -1,6 +1,6 @@
 import { UserAction, UpdateType, Message } from '../const.js';
 import { isEsc, isOnline } from '../utils/common.js';
-import { rerender, remove } from '../utils/render.js';
+import { rerender } from '../utils/render.js';
 import { alert } from '../utils/alert.js';
 
 import PointView from '../views/point.js';
@@ -42,17 +42,11 @@ export default class PointPresenter {
       this._currentView.setFavoriteButtonClickHandler(this._handleFavoriteButtonClick);
     }
 
+    if (prevView instanceof EditPointView) {
+      prevView.destroyDatePickers();
+    }
+
     rerender(this._currentView, prevView, this._pointContainer);
-  }
-
-  destroy() {
-    this._point = null;
-
-    remove(this._pointView);
-    remove(this._editPointView);
-
-    this._pointView = null;
-    this._editPointView = null;
   }
 
   setOffersAndDestinations(offers = [], destinations = []) {

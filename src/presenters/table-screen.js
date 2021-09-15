@@ -1,4 +1,4 @@
-import { remove, rerender, render } from '../utils/render.js';
+import { remove, render } from '../utils/render.js';
 import { sortByBasePrice, sortByTime, filterPoints } from '../utils/point.js';
 import { SortType, UpdateType, UserAction, filterTypeToMessage, Message } from '../const.js';
 import { alert } from '../utils/alert.js';
@@ -37,10 +37,6 @@ export default class TableScreenPresenter {
     this._handleModelChange = this._handleModelChange.bind(this);
     this._handleSortBarChange = this._handleSortBarChange.bind(this);
     this._handlePointViewAction = this._handlePointViewAction.bind(this);
-  }
-
-  get addNewPointMode() {
-    return !!this._newPointPresenter;
   }
 
   init() {

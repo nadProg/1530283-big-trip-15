@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 
 import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js';
-import { isEnter, enableForm, disableForm, moveCursorToEnd } from '../utils/common.js';
+import { isEnter, enableForm, disableForm, moveCursorToEnd, isOnline } from '../utils/common.js';
 import { getDefaultDate } from '../utils/date.js';
 
 import SmartView from './smart.js';
@@ -34,6 +34,26 @@ const createOfferTemplate = ({ title, price }, index, isChecked = false) => `
 `;
 
 const createDestinationPhoto = ({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`;
+
+const createDestinationTemplate = ({ name, description, pictures }) => `
+  <section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">${name}</h3>
+
+    ${description ? `
+      <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France,
+        ${description}
+      </p>
+    ` : ''}
+
+    ${ isOnline() && pictures && pictures.length ? `
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${pictures.map(createDestinationPhoto).join('')}
+        </div>
+      </div>
+    ` : ''}
+  </section>
+`;
 
 const createEditPointTemplate = (point) => {
   const { basePrice, offers: chosenOffers, type: chosenType, destination, availableOffers, availableDestinations, isNew } = point;
@@ -118,23 +138,7 @@ const createEditPointTemplate = (point) => {
               </div>
             </section>
           ` : ''}
-
-          ${destination ? `
-            <section class="event__section  event__section--destination">
-              <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
-              <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France,
-                ${destination.description}
-              </p>
-              ${ destination.pictures.length ? `
-                <div class="event__photos-container">
-                  <div class="event__photos-tape">
-                    ${destination.pictures.map(createDestinationPhoto).join('')}
-                  </div>
-                </div>
-              ` : ''}
-            </section>
-          ` : ''}
-
+          ${destination ? createDestinationTemplate(destination) : ''}
         </section>
       </form>
     </li>
@@ -214,6 +218,16 @@ export default class EditPointView extends SmartView {
 
     this.getElement().addEventListener('submit', this._submitHandler);
     this.getElement().addEventListener('reset', this._resetHandler);
+  }
+
+  destroyDatePickers() {
+    if (this._datePickers.start) {
+      this._datePickers.start.destroy();
+    }
+
+    if (this._datePickers.end) {
+      this._datePickers.end.destroy();
+    }
   }
 
   _getData() {

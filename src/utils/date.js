@@ -1,8 +1,6 @@
 import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration';
 
-const ONE_DAY = 1000 * 60 * 60 * 24;
-
 dayjs.extend(durationPlugin);
 
 export const formdatEventDate = (date) => dayjs(date).format('MMM DD');
@@ -67,7 +65,13 @@ export const formatTripDate = (date) => {
   return `${start}&nbsp;&mdash;&nbsp;${end}`;
 };
 
-export const getDefaultDate = () => ({
-  start: new Date(),
-  end: new Date(Date.now() + ONE_DAY),
-});
+export const getDefaultDate = () => {
+  const currentDate = dayjs();
+  currentDate.second(0);
+  currentDate.millisecond(0);
+
+  return {
+    start: currentDate.toDate(),
+    end: currentDate.add(1, 'day').toDate(),
+  };
+};

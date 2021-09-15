@@ -44,10 +44,16 @@ export default class PointsModel extends AbstractObserver {
   static adaptPointToClient(point) {
     const clientPoint = { ...point };
 
-    clientPoint.date = {
-      end: new Date(point['date_to']),
-      start: new Date(point['date_from']),
-    };
+    const end = new Date(point['date_to']);
+    const start = new Date(point['date_from']);
+
+    end.setSeconds(0);
+    start.setSeconds(0);
+    end.setMilliseconds(0);
+    start.setMilliseconds(0);
+
+    clientPoint.date = { start, end };
+
     clientPoint.basePrice = point['base_price'];
     clientPoint.isFavorite = point['is_favorite'];
 

@@ -69,7 +69,7 @@ export default class ApplicationPresenter {
 
     try {
       const points = await this._api.getPoints();
-      this._pointsModel.setPoints(UpdateType.INIT, points.slice(0, 1));
+      this._pointsModel.setPoints(UpdateType.INIT, points);
     } catch (error) {
       alert(error.message);
     }
