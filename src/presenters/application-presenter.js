@@ -52,11 +52,12 @@ export default class ApplicationPresenter {
 
     this._resetAddNewPointMode = this._resetAddNewPointMode.bind(this);
 
+    this._windowOnlineHandler = this._windowOnlineHandler.bind(this);
+
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleNavigationClick = this._handleNavigationClick.bind(this);
     this._handlePointModelChange = this._handlePointModelChange.bind(this);
     this._handleAddEventButtonClick = this._handleAddEventButtonClick.bind(this);
-    this._loadOffersAndDestinations = this._loadOffersAndDestinations.bind(this);
 
     this._pointsModel.addObserver(this._handlePointModelChange);
   }
@@ -92,10 +93,10 @@ export default class ApplicationPresenter {
     this._renderNavigation();
     this._renderScreen();
 
-    window.addEventListener('online', this._loadOffersAndDestinations);
+    window.addEventListener('online', this._windowOnlineHandler);
 
     if (isOnline()) {
-      this._loadOffersAndDestinations();
+      this._windowOnlineHandler();
     }
   }
 
@@ -249,7 +250,7 @@ export default class ApplicationPresenter {
     this._eventAddButtonView.toggleDisabled();
   }
 
-  async _loadOffersAndDestinations() {
+  async _windowOnlineHandler() {
     try {
       const [ offers, destinations ] = await Promise.all([
         this._api.getOffers(),

@@ -17,13 +17,13 @@ const applicationPresenter = new ApplicationPresenter({
   container: document.body,
 });
 
-const onWindowOffline = () => {
+const windowOfflineHandler = () => {
   document.title += OFFLINE_POSTFIX;
   alert(Message.OFFLINE);
 };
 
 if (!isOnline()) {
-  onWindowOffline();
+  windowOfflineHandler();
 }
 
 applicationPresenter.init();
@@ -34,7 +34,7 @@ window.addEventListener('online', () => {
   provider.sync();
 });
 
-window.addEventListener('offline', onWindowOffline);
+window.addEventListener('offline', windowOfflineHandler);
 
 window.addEventListener('load', () => {
   navigator.serviceWorker.register('/sw.js');
