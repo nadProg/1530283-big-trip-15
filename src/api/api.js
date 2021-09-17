@@ -1,6 +1,6 @@
 import { APIMethod, SuccessHTTPStatusRange } from '../const.js';
 
-import PointsModel from '../models/points.js';
+import PointsModel from '../models/points-model.js';
 
 export default class Api {
   constructor(endPoint, authorization) {

@@ -1,7 +1,7 @@
 import { formatTripCities } from '../utils/point.js';
 import { formatTripDate } from '../utils/date.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createTripInfoTemplate = ({ tripCities, price, tripDate }) => `
   <section class="trip-main__trip-info  trip-info">

@@ -3,8 +3,8 @@ import { isEsc, isOnline } from '../utils/common.js';
 import { rerender } from '../utils/render.js';
 import { alert } from '../utils/alert.js';
 
-import PointView from '../views/point.js';
-import EditPointView from '../views/edit-point.js';
+import PointView from '../views/point-view.js';
+import EditPointView from '../views/edit-point-view.js';
 
 export default class PointPresenter {
   constructor({ container, offers, destinations, closeAllEditPoints, handlePointViewAction, api }) {

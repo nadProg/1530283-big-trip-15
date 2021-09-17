@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createMainTemplate = () => '<main class="page-body__page-main  page-main"></main>';
 

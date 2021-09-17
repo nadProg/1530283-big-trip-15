@@ -1,6 +1,6 @@
 import { isOnline } from '../utils/common.js';
 
-import PointsModel from '../models/points.js';
+import PointsModel from '../models/points-model.js';
 
 export default class Provider {
   constructor(api, store) {

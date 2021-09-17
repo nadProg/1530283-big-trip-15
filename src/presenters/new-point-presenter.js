@@ -3,7 +3,7 @@ import { Place, UserAction, UpdateType, Message } from '../const.js';
 import { render, remove } from '../utils/render.js';
 import { alert } from '../utils/alert.js';
 
-import EditPointView from '../views/edit-point.js';
+import EditPointView from '../views/edit-point-view.js';
 
 export default class NewPointPresenter {
   constructor({ container, offers, destinations, closeNewPoint, handlePointViewAction, api }) {

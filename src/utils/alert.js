@@ -13,8 +13,8 @@ const getAlertTemplate = (text, { time = ALERT_TIME, type = AlertType.ERROR } = 
   </div>
 `;
 
-const onAlertNodeAnimationEnd = ({ currentTarget }) => {
-  currentTarget.removeEventListener('animationend', onAlertNodeAnimationEnd);
+const alertNodeAnimationEndHandler = ({ currentTarget }) => {
+  currentTarget.removeEventListener('animationend', alertNodeAnimationEndHandler);
   currentTarget.remove();
 };
 
@@ -22,7 +22,7 @@ const alert = (text, options) => {
   const template = getAlertTemplate(text, options);
   const alertNode = createElement(template);
 
-  alertNode.addEventListener('animationend', onAlertNodeAnimationEnd);
+  alertNode.addEventListener('animationend', alertNodeAnimationEndHandler);
 
   document.body.appendChild(alertNode);
 };

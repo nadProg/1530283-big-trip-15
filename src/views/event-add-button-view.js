@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createEventAddButtonTemplate = () => `
   <button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>

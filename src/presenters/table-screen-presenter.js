@@ -3,13 +3,13 @@ import { sortByBasePrice, sortByTime, filterPoints } from '../utils/point.js';
 import { SortType, UpdateType, UserAction, filterTypeToMessage, Message } from '../const.js';
 import { alert } from '../utils/alert.js';
 
-import TripEventsView from '../views/trip-events.js';
-import SortBarView from '../views/sort-bar.js';
-import TripEventsListView from '../views/trip-events-list.js';
-import MessageView from '../views/message.js';
+import TripEventsView from '../views/trip-events-view.js';
+import SortBarView from '../views/sort-bar-view.js';
+import TripEventsListView from '../views/trip-events-list-view.js';
+import MessageView from '../views/message-view.js';
 
-import PointPresenter from './point.js';
-import NewPointPresenter from './new-point.js';
+import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class TableScreenPresenter {
   constructor({ container, pointsModel, filterModel, offers = [], destinations = [], resetAddNewPointMode, api }) {

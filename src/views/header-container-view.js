@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createHeaderContainerTemplate = () => `
   <div class="page-body__container  page-header__container">
