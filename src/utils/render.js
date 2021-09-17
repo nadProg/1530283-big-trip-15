@@ -30,13 +30,11 @@ export const replace = (newChild, oldChild) => {
     newChild = newChild.getElement();
   }
 
-  const parent = oldChild.parentElement;
-
-  if (parent === null || oldChild === null || newChild === null) {
+  if (newChild === null || oldChild === null || oldChild.parentElement === null) {
     throw new Error('Can\'t replace unexisting elements');
   }
 
-  parent.replaceChild(newChild, oldChild);
+  oldChild.parentElement.replaceChild(newChild, oldChild);
 };
 
 export const rerender = (newElement, oldElement, container, place = Place.BEFORE_END) => {
