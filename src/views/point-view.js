@@ -3,7 +3,7 @@ import {
   formatDateTime, formatDuration, getDuration
 } from '../utils/date.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createOfferItemTemplate = ({ title, price }) => `
   <li class="event__offer">

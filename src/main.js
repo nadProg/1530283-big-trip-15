@@ -2,7 +2,7 @@ import { END_POINT, AUTHORIZATION, OFFLINE_POSTFIX, Message } from './const.js';
 import { alert, AlertType } from './utils/alert.js';
 import { isOnline } from './utils/common.js';
 
-import ApplicationPresenter from './presenters/application.js';
+import ApplicationPresenter from './presenters/application-presenter.js';
 
 import API from './api/api.js';
 import Store from './api/store.js';

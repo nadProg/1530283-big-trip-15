@@ -1,6 +1,6 @@
 import { Screen } from '../const.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createNavigationItemTemplate = (item, isActive) => `
   <a

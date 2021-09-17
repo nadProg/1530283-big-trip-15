@@ -5,24 +5,24 @@ import { getTripPrice, getTripCities, getTripDate, getFilters } from '../utils/p
 import { getStatisticsDatasets } from '../utils/statistics.js';
 import { alert } from '../utils/alert.js';
 
-import PointsModel from '../models/points.js';
-import FilterModel from '../models/filter.js';
+import PointsModel from '../models/points-model.js';
+import FilterModel from '../models/filter-model.js';
 
-import HeaderView from '../views/header.js';
-import HeaderContainerView from '../views/header-container.js';
-import TripMainView from '../views/trip-main.js';
-import TripInfoView from '../views/trip-info.js';
-import TripControlsView from '../views/trip-controls.js';
-import NavigationView from '../views/navigation.js';
-import FiltersView from '../views/filters.js';
-import EventAddButtonView from '../views/event-add-button.js';
-import MainView from '../views/main.js';
-import ContainerView from '../views/container.js';
-import StatisticsView from '../views/statistics.js';
-import TripEventsView from '../views/trip-events.js';
-import MessageView from '../views/message.js';
+import HeaderView from '../views/header-view.js';
+import HeaderContainerView from '../views/header-container-view.js';
+import TripMainView from '../views/trip-main-view.js';
+import TripInfoView from '../views/trip-info-view.js';
+import TripControlsView from '../views/trip-controls-view.js';
+import NavigationView from '../views/navigation-view.js';
+import FiltersView from '../views/filters-view.js';
+import EventAddButtonView from '../views/event-add-button-view.js';
+import MainView from '../views/main-view.js';
+import ContainerView from '../views/container-view.js';
+import StatisticsView from '../views/statistics-view.js';
+import TripEventsView from '../views/trip-events-view.js';
+import MessageView from '../views/message-view.js';
 
-import TableScreenPresenter from './table-screen.js';
+import TableScreenPresenter from './table-screen-presenter.js';
 
 export default class ApplicationPresenter {
   constructor({ container, api }) {

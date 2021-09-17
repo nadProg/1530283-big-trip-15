@@ -4,7 +4,7 @@ import { PointType, DEFAULT_POINT, COMMON_DATEPICKER_OPTIONS } from '../const.js
 import { isEnter, enableForm, disableForm, moveCursorToEnd, isOnline } from '../utils/common.js';
 import { getDefaultDate } from '../utils/date.js';
 
-import SmartView from './smart.js';
+import SmartView from './smart-view.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 

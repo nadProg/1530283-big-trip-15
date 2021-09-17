@@ -1,6 +1,6 @@
 import { replace } from '../utils/render.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 export default class SmartView extends AbstractView {
   constructor() {

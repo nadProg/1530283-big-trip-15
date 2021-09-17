@@ -1,6 +1,6 @@
 import { FilterType } from '../const.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createFilterItemTemplate = (filter, isChecked, isDisabled) => `
   <div class="trip-filters__filter">

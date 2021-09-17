@@ -1,6 +1,6 @@
 import { SortType } from '../const.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createSortItemTemplate = (sortType, isChecked) => {
   const isDisabled = sortType === SortType.EVENT || sortType === SortType.OFFERS ? 'disabled' : '';

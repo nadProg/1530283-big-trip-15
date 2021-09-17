@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createMessageTemplate = (message) => `<p class="trip-events__msg">${message}</p>`;
 

@@ -1,6 +1,6 @@
 import { Place } from '../const.js';
 
-import AbstractView from '../views/abstract.js';
+import AbstractView from '../views/abstract-view.js';
 
 export const render = (container, element, place = Place.BEFORE_END) => {
   if (container instanceof AbstractView) {

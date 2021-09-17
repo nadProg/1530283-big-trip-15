@@ -6,7 +6,7 @@ import {
   STATISTICS_CHART_BAR_HEIGHT, STATISCTICS_CHART_TYPE, STATISTICS_CHART_OPTIONS
 } from '../const.js';
 
-import AbstractView from './abstract.js';
+import AbstractView from './abstract-view.js';
 
 const createCanvasTemplate = (type) => `
   <div class="statistics__item">
