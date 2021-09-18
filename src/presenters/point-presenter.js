@@ -21,10 +21,11 @@ export default class PointPresenter {
 
     this._handleReset = this._handleReset.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
-    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
     this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleFavoriteButtonClick = this._handleFavoriteButtonClick.bind(this);
+
+    this._windowKeydownHandler = this._windowKeydownHandler.bind(this);
   }
 
   init(point) {
@@ -60,7 +61,7 @@ export default class PointPresenter {
     if (!this._editMode) {
       this._editMode = true;
       this.init(this._point);
-      window.addEventListener('keydown', this._handleWindowKeydown);
+      window.addEventListener('keydown', this._windowKeydownHandler);
     }
   }
 
@@ -68,7 +69,7 @@ export default class PointPresenter {
     if (this._editMode) {
       this._editMode = false;
       this.init(this._point);
-      window.removeEventListener('keydown', this._handleWindowKeydown);
+      window.removeEventListener('keydown', this._windowKeydownHandler);
     }
   }
 
@@ -88,14 +89,6 @@ export default class PointPresenter {
 
   _handleCloseButtonClick() {
     this.setViewMode();
-  }
-
-  _handleWindowKeydown(evt) {
-    if (isEsc(evt)) {
-      evt.preventDefault();
-
-      this.setViewMode();
-    }
   }
 
   async _handleFavoriteButtonClick() {
@@ -126,5 +119,13 @@ export default class PointPresenter {
 
     await this._api.deletePoint(payload);
     await this._changePoint(UserAction.DELETE_POINT, UpdateType.MINOR, payload);
+  }
+
+  _windowKeydownHandler(evt) {
+    if (isEsc(evt)) {
+      evt.preventDefault();
+
+      this.setViewMode();
+    }
   }
 }

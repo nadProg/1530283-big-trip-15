@@ -169,18 +169,16 @@ export default class EditPointView extends SmartView {
       start: null,
     };
 
+    this._resetHandler = this._resetHandler.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeOffersHandler = this._changeOffersHandler.bind(this);
     this._changeBasePriceHandler = this._changeBasePriceHandler.bind(this);
-    this._resetHandler = this._resetHandler.bind(this);
-    this._submitHandler = this._submitHandler.bind(this);
     this._inputDestinationHandler = this._inputDestinationHandler.bind(this);
+    this._keyDownDestinationHandler = this._keyDownDestinationHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
-
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
-
-    this._keyDownDestinationHandler = this._keyDownDestinationHandler.bind(this);
 
     this._updateAvailableOffers(this._data.type);
     this.restoreHandlers();

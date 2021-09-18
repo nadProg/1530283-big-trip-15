@@ -31,7 +31,7 @@ export default class NavigationView extends AbstractView {
 
     this._activeItem = activeItem;
 
-    this._clickHanlder = this._clickHanlder.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
@@ -40,10 +40,10 @@ export default class NavigationView extends AbstractView {
 
   setClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().addEventListener('click', this._clickHanlder);
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 
-  _clickHanlder(evt) {
+  _clickHandler(evt) {
     const link = evt.target.closest('.trip-tabs__btn');
 
     if (!link && !evt.currentTarget.contains(link)) {
