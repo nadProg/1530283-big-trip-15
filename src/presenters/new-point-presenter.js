@@ -19,7 +19,8 @@ export default class NewPointPresenter {
 
     this._handleReset = this._handleReset.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
-    this._handleWindowKeydown = this._handleWindowKeydown.bind(this);
+
+    this._windowKeydownHandler = this._windowKeydownHandler.bind(this);
   }
 
   init() {
@@ -33,7 +34,7 @@ export default class NewPointPresenter {
 
     render(this._pointContainer, this._newPointView, Place.AFTER_BEGIN);
 
-    window.addEventListener('keydown', this._handleWindowKeydown);
+    window.addEventListener('keydown', this._windowKeydownHandler);
   }
 
   destroy() {
@@ -43,15 +44,7 @@ export default class NewPointPresenter {
 
     this._closeNewPoint();
 
-    window.removeEventListener('keydown', this._handleWindowKeydown);
-  }
-
-  _handleWindowKeydown(evt) {
-    if (isEsc(evt)) {
-      evt.preventDefault();
-
-      this.destroy();
-    }
+    window.removeEventListener('keydown', this._windowKeydownHandler);
   }
 
   _handleReset() {
@@ -66,5 +59,13 @@ export default class NewPointPresenter {
 
     const updatedPayload = await this._api.createPoint(payload);
     await this._changePoint(UserAction.CREATE_POINT, UpdateType.MINOR, updatedPayload);
+  }
+
+  _windowKeydownHandler(evt) {
+    if (isEsc(evt)) {
+      evt.preventDefault();
+
+      this.destroy();
+    }
   }
 }
